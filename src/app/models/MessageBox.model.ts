@@ -1,0 +1,4 @@
+enum MessageBoxType {
+  Info,
+  Prompt,
+}

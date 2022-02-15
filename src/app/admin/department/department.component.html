@@ -1,0 +1,68 @@
+<div class="d-flex">
+    <app-sidebar class="sidebar" [userType]="'admin'"></app-sidebar>
+    <div class="main-content">
+        <app-navbar></app-navbar>
+        <div class="p-2">
+            <div class="container">
+                <div class="d-flex justify-content-between my-2">
+                    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                        <input type="search" placeholder="Search" class="form-control rounded" formControlName="search">
+                    </form>
+
+                    <span>
+                        <button class="btn btn-warning rounded" (click)="onCreateNew()">
+                            New Department
+                        </button>
+                    </span>
+                </div>
+                <div class="card card-rounded">
+                    <div class="card-body">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Date Created</th>
+                                    <th>Date Modified</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let department of departments; index as i;">
+                                    <tr>
+                                        <td>{{i+1}}.</td>
+                                        <td class="text-capitalize">{{department.name}}</td>
+                                        <td>{{department.createdAt | date}}</td>
+                                        <td>{{department.updatedAt | date}}</td>
+                                        <td>
+                                            <div ngbDropdown placement="bottom">
+                                                <button ngbDropdownToggle class="btn btn-info">
+                                                    More
+                                                </button>
+                                                <div ngbDropdownMenu>
+                                                    <button ngbDropdownItem (click)="onEdit(department)">
+                                                        <i class="fas fa-pen mr-2"></i>
+                                                        Edit
+                                                    </button>
+                                                    <button ngbDropdownItem>
+                                                        <i class="fas fa-trash-alt mr-2"></i>
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center" *ngIf="hasMore">
+                        <button class="btn btn-outline-info" (click)="loadData(++currentPage)">
+                            Load More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
