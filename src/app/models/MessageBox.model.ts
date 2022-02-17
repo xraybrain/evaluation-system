@@ -1,4 +1,21 @@
-enum MessageBoxType {
+export enum MessageBoxType {
   Info,
-  Prompt,
+  Success,
+  Warning,
+  Error,
+}
+
+export enum MessageBoxButton {
+  Ok,
+  Confirm,
+  Cancel,
+  Close,
+}
+
+export class MessageBoxSetting {
+  constructor(
+    public title: string,
+    public message: string,
+    public type: MessageBoxType
+  ) {}
 }

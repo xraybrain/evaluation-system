@@ -7,17 +7,21 @@ import {
   refreshAccessToken,
 } from 'server/services/App.service';
 import { verifyToken } from 'server/utils/jwt.util';
+import * as cookie from 'cookie';
 
 export const refreshAccess = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const authorization =
-    (req.query['authorization'] as string) ||
-    (req.headers['authorization'] as string);
-
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const authorization = cookies['access-token'];
+  req.headers['authorization'] = authorization;
+  // (req.query['authorization'] as string) ||
+  // (req.headers['authorization'] as string) ||
+  console.log(authorization);
   const cancelAuth = async (id: string) => {
+    console.log('logging out...' + id);
     req.query['authorization'] = '';
     req.headers['authorization'] = '';
     await logout(id);
@@ -54,7 +58,6 @@ export const refreshAccess = async (
               req.query['authorization'] = refreshedToken;
               req.headers['authorization'] = refreshedToken;
               res.setHeader('x-refresh', refreshedToken);
-              global.localStorage.setItem('x-access', refreshedToken);
             } else {
               await cancelAuth(refreshToken.id);
             }

@@ -43,6 +43,7 @@ model User {
   teacher       Teacher?
   student       Student?
   refreshTokens RefreshToken[]
+  activities    Activity[]
 
   createdAt DateTime
   updatedAt DateTime  @updatedAt
@@ -78,15 +79,16 @@ model Teacher {
 }
 
 model Student {
-  id         Int        @id @default(autoincrement())
-  userId     Int        @unique
-  user       User       @relation(fields: [userId], references: [id])
-  regNo      String     @db.VarChar(100)
-  levelId    Int
-  level      Level      @relation(fields: [levelId], references: [id])
-  deptId     Int
-  department Department @relation(fields: [deptId], references: [id])
-  answers    Answer[]
+  id          Int          @id @default(autoincrement())
+  userId      Int          @unique
+  user        User         @relation(fields: [userId], references: [id])
+  regNo       String       @db.VarChar(100)
+  levelId     Int
+  level       Level        @relation(fields: [levelId], references: [id])
+  deptId      Int
+  department  Department   @relation(fields: [deptId], references: [id])
+  answers     Answer[]
+  quizResults QuizResult[]
 }
 
 model Course {
@@ -116,13 +118,14 @@ model Topic {
 }
 
 model Quiz {
-  id        Int        @id @default(autoincrement())
-  token     String     @unique @db.VarChar(15)
-  title     String
-  active    Boolean    @default(false)
-  topicId   Int
-  topic     Topic      @relation(fields: [topicId], references: [id])
-  questions Question[]
+  id          Int          @id @default(autoincrement())
+  token       String       @unique @db.VarChar(15)
+  title       String
+  active      Boolean      @default(false)
+  topicId     Int
+  topic       Topic        @relation(fields: [topicId], references: [id])
+  questions   Question[]
+  quizResults QuizResult[]
 
   createdAt DateTime
   updatedAt DateTime  @updatedAt
@@ -160,6 +163,29 @@ model Answer {
   student    Student  @relation(fields: [studentId], references: [id])
   answer     String
 
+  createdAt DateTime
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model QuizResult {
+  id        Int     @id @default(autoincrement())
+  score     Int     @default(0)
+  quizId    Int
+  quiz      Quiz    @relation(fields: [quizId], references: [id])
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
+  createdAt DateTime
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Activity {
+  id      Int    @id @default(autoincrement())
+  content String @db.VarChar(250)
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime
   updatedAt DateTime  @updatedAt

@@ -10,6 +10,12 @@ import { AdminManagerComponent } from './components/admin-manager/admin-manager.
 import { StudentManagerComponent } from './components/student-manager/student-manager.component';
 import { TeacherManagerComponent } from './components/teacher-manager/teacher-manager.component';
 import { LoginComponent } from './login/login.component';
+import { CourseManagerComponent } from './teacher/course-manager/course-manager.component';
+import { QuizManagerComponent } from './teacher/quiz-manager/quiz-manager.component';
+import { QuizQuestionManagerComponent } from './teacher/quiz-question-manager/quiz-question-manager.component';
+import { TeacherDashboardComponent } from './teacher/teacher-dashboard/teacher-dashboard.component';
+import { TeacherManageStudentsComponent } from './teacher/teacher-manage-students/teacher-manage-students.component';
+import { TopicManagerComponent } from './teacher/topic-manager/topic-manager.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -24,6 +30,24 @@ const routes: Routes = [
   { path: 'admin/manage/admins', component: AdminManageAdminsComponent },
   { path: 'admin/manage/teachers', component: AdminManageTeachersComponent },
   { path: 'admin/manage/students', component: AdminManageStudentsComponent },
+  { path: 'teacher/dashboard', component: TeacherDashboardComponent },
+  {
+    path: 'teacher/manage/students',
+    component: TeacherManageStudentsComponent,
+  },
+  { path: 'teacher/manage/courses', component: CourseManagerComponent },
+  {
+    path: 'teacher/manage/course/topics/:cid',
+    component: TopicManagerComponent,
+  },
+  {
+    path: 'teacher/manage/course/topic/quiz/:tid',
+    component: QuizManagerComponent,
+  },
+  {
+    path: 'teacher/manage/course/topics/quiz/questions/:qid',
+    component: QuizQuestionManagerComponent,
+  },
 ];
 
 @NgModule({

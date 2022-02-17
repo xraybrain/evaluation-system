@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import {
   HttpInterceptor,
   HttpEvent,
@@ -10,19 +10,24 @@ import {
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { platformBrowser } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class HeaderInterceptor implements HttpInterceptor {
+  isBrowser = false;
   constructor(
+    @Inject(PLATFORM_ID) platformId: Object,
     private readonly authService: AuthService,
     private readonly router: Router
-  ) {}
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (request instanceof HttpRequest) {
-      console.log('Request');
       const accessToken = this.authService.accessToken;
       if (accessToken) {
         request = request.clone({
@@ -34,11 +39,6 @@ export class HeaderInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       tap((event: HttpEvent<any>) => {
         if (event.type === HttpEventType.Response) {
-          console.log(
-            'Response',
-            event.headers.get('x-access'),
-            event.headers.get('x-refresh')
-          );
           const token =
             event.headers.get('x-access') || event.headers.get('x-refresh');
           if (token) {
@@ -48,9 +48,9 @@ export class HeaderInterceptor implements HttpInterceptor {
         return event;
       }),
       catchError((err: HttpErrorResponse, caught) => {
-        if (err.status === 401) {
-          this.authService.removeAccessToken();
-          this.router.navigate(['login']);
+        console.log(isPlatformBrowser(PLATFORM_ID));
+        if (err.status === 401 && this.isBrowser) {
+          this.authService.logout();
         }
         return throwError(() => err);
       })

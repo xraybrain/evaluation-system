@@ -26,7 +26,7 @@ export const createStudent = async (request: CreateStudentRequest) => {
     if (emailExists) {
       feedback = new Feedback(false, 'Email already exists.');
     } else if (regNoExists) {
-        feedback = new Feedback(false, 'RegNo already exists.');
+      feedback = new Feedback(false, 'RegNo already exists.');
     } else {
       const salt = bcrypt.genSaltSync(SALT_ROUND);
       const hash = bcrypt.hashSync(request.password, salt);
@@ -105,12 +105,25 @@ export const getStudents = async (page: number, search?: string) => {
   try {
     let filter: any = { user: { deletedAt: { equals: null } } };
     if (search && search !== 'undefined') {
-      filter.user.surname = { contains: search };
-      filter.user.othernames = { contains: search };
-      filter.regNo = { contains: search };
+      // filter.user.surname = { contains: search };
+      // filter.user.othernames = { contains: search };
+      // filter.regNo = ;
+      filter.OR = [
+        { regNo: { contains: search } },
+        {
+          user: {
+            OR: [
+              { surname: { contains: search } },
+              { othernames: { contains: search } },
+            ],
+          },
+        },
+      ];
     }
 
-    let totalPages = await prisma.student.count({ where: filter });
+    let totalPages = await prisma.student.count({
+      where: filter,
+    });
     let pagination = new Pagination(page, 10, totalPages);
 
     feedback = new Feedback(true, 'success');
@@ -129,6 +142,8 @@ export const getStudents = async (page: number, search?: string) => {
             type: true,
           },
         },
+        department: true,
+        level: true,
       },
       orderBy: { user: { surname: 'asc' } },
     });
@@ -144,6 +159,12 @@ export const getStudents = async (page: number, search?: string) => {
 export const updateStudent = async (request: UpdateStudentRequest) => {
   let feedback: Feedback;
   try {
+    let hash: string | undefined;
+    if (request.password) {
+      const salt = bcrypt.genSaltSync(SALT_ROUND);
+      hash = bcrypt.hashSync(request.password, salt);
+    }
+
     await prisma.student.update({
       data: {
         regNo: request.regNo,
@@ -154,6 +175,7 @@ export const updateStudent = async (request: UpdateStudentRequest) => {
             surname: request.surname,
             othernames: request.othernames,
             email: request.email,
+            password: hash,
           },
         },
       },

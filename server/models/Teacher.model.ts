@@ -5,7 +5,6 @@ export class CreateTeacherRequest {
     public othernames: string,
     public email: string,
     public password: string,
-    public levelId: number,
     public deptId: number
   ) {}
 }
@@ -17,7 +16,8 @@ export class UpdateTeacherRequest {
     public othernames?: string,
     public email?: string,
     public levelId?: any,
-    public deptId?: any
+    public deptId?: any,
+    public password?: string
   ) {}
 }
 

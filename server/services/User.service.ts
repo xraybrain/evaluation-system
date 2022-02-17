@@ -7,16 +7,7 @@ export const getUser = async (filter: any) => {
   try {
     user = await prisma.user.findFirst({
       where: filter,
-      select: {
-        surname: true,
-        othernames: true,
-        email: true,
-        type: true,
-        avatar: true,
-        student: true,
-        admin: true,
-        teacher: true,
-      },
+      include: { student: true, admin: true, teacher: true },
     });
   } catch (error) {
     console.log(error);

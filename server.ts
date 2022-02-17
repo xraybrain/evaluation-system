@@ -19,6 +19,7 @@ import * as cors from 'cors';
 import { deserializeUser } from 'server/middlewares/deserializeUser.middleware';
 import * as http from 'http';
 import { Server } from 'socket.io';
+import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 import 'localstorage-polyfill';
 global['localStorage'] = localStorage;
 dotEnv.config();
@@ -68,7 +69,12 @@ export function App(): http.Server {
   app.get('*', (req, res) => {
     res.render(indexHtml, {
       req,
-      providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
+      res,
+      providers: [
+        { provide: APP_BASE_HREF, useValue: req.baseUrl },
+        { provide: REQUEST, useValue: req },
+        { provide: RESPONSE, useValue: res },
+      ],
     });
   });
 

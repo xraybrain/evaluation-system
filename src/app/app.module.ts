@@ -17,6 +17,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderInterceptor } from './interceptor/HeaderInterceptor.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AdminManagerComponent } from './components/admin-manager/admin-manager.component';
@@ -28,6 +29,26 @@ import { AdminManageTeachersComponent } from './admin/admin-manage-teachers/admi
 import { AdminManageStudentsComponent } from './admin/admin-manage-students/admin-manage-students.component';
 import { DepartmentFormComponent } from './modals/department-form/department-form.component';
 import { MessageBoxComponent } from './modals/message-box/message-box.component';
+import { CookieModule } from 'ngx-cookie';
+import { AdminFormComponent } from './modals/admin-form/admin-form.component';
+import { ProfileCardComponent } from './modals/profile-card/profile-card.component';
+import { TeacherFormComponent } from './modals/teacher-form/teacher-form.component';
+import { StudentFormComponent } from './modals/student-form/student-form.component';
+import { QuizManagerComponent } from './teacher/quiz-manager/quiz-manager.component';
+import { CourseManagerComponent } from './teacher/course-manager/course-manager.component';
+import { QuizQuestionManagerComponent } from './teacher/quiz-question-manager/quiz-question-manager.component';
+import { TopicManagerComponent } from './teacher/topic-manager/topic-manager.component';
+import { TeacherManageStudentsComponent } from './teacher/teacher-manage-students/teacher-manage-students.component';
+import { TopicFormComponent } from './modals/topic-form/topic-form.component';
+import { CourseFormComponent } from './modals/course-form/course-form.component';
+import { QuizFormComponent } from './modals/quiz-form/quiz-form.component';
+
+const config: SocketIoConfig = {
+  url: '', // socket server url;
+  options: {
+    transports: ['websocket'],
+  },
+};
 
 @NgModule({
   declarations: [
@@ -51,6 +72,18 @@ import { MessageBoxComponent } from './modals/message-box/message-box.component'
     AdminManageStudentsComponent,
     DepartmentFormComponent,
     MessageBoxComponent,
+    AdminFormComponent,
+    ProfileCardComponent,
+    TeacherFormComponent,
+    StudentFormComponent,
+    QuizManagerComponent,
+    CourseManagerComponent,
+    QuizQuestionManagerComponent,
+    TopicManagerComponent,
+    TeacherManageStudentsComponent,
+    TopicFormComponent,
+    CourseFormComponent,
+    QuizFormComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -59,9 +92,17 @@ import { MessageBoxComponent } from './modals/message-box/message-box.component'
     NgbModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({ timeOut: 2000 }),
+    CookieModule.forRoot(),
+    SocketIoModule.forRoot(config),
   ],
-  entryComponents: [DepartmentFormComponent],
+  entryComponents: [
+    DepartmentFormComponent,
+    AdminFormComponent,
+    ProfileCardComponent,
+    CourseFormComponent,
+    TopicFormComponent,
+  ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
   ],

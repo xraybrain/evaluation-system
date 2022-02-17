@@ -2,15 +2,15 @@ import { NextFunction, Request, Response } from 'express';
 import { decode } from 'jsonwebtoken';
 import { AppRequest } from 'server/models/App.model';
 import { getUser } from 'server/services/User.service';
+import * as cookie from 'cookie';
 
 export const deserializeUser = async (
   req: AppRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const authorization =
-    (req.query['authorization'] as string) ||
-    (req.headers['authorization'] as string);
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const authorization = cookies['access-token'];
   if (authorization) {
     const accessToken = authorization.split(' ')[1];
     const decoded: any = decode(accessToken);

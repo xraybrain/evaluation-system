@@ -43,22 +43,36 @@ export const getDepartment = async (id: number) => {
   return feedback;
 };
 
-export const getDepartments = async (page = 1, search?: string) => {
+export const getDepartments = async (
+  page = 1,
+  search?: string,
+  paginate = true
+) => {
   let feedback: Feedback;
   try {
+    const query: any = {
+      where: {},
+      orderBy: { name: 'asc' },
+    };
     let filter: any = { deletedAt: { equals: null } };
     if (search && search !== 'undefined') {
       filter.name = { contains: search };
     }
     let totalPages = await prisma.department.count({ where: filter });
     let pagination = new Pagination(page, 20, totalPages);
+    if (paginate) {
+      query.skip = pagination.skip;
+      query.take = pagination.take;
+    }
+    query.where = filter;
     feedback = new Feedback(true, 'success');
-    feedback.results = await prisma.department.findMany({
-      where: filter,
-      skip: pagination.skip,
-      take: pagination.take,
-      orderBy: { name: 'asc' },
-    });
+    feedback.results = await prisma.department.findMany(query);
+    // {
+    //   where: filter,
+    //   skip: pagination.skip,
+    //   take: pagination.take,
+    //   orderBy: { name: 'asc' },
+    // }
     feedback.page = pagination.page;
     feedback.pages = pagination.totalPages;
   } catch (error) {

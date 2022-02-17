@@ -64,7 +64,7 @@ export const logout = async (id: string) => {
   try {
     await prisma.refreshToken.update({
       data: { valid: false },
-      where: { id: id },
+      where: { id },
     });
     feedback = new Feedback(true, 'success');
   } catch (error) {
@@ -126,6 +126,18 @@ export const resetPassword = async (request: ResetPasswordRequest) => {
   } catch (error) {
     console.log(error);
     feedback = new Feedback(false, 'Operation failed');
+  }
+  return feedback;
+};
+
+export const getLevels = async () => {
+  let feedback: Feedback;
+  try {
+    feedback = new Feedback(true, 'success');
+    feedback.results = await prisma.level.findMany();
+  } catch (error) {
+    feedback = new Feedback(false, 'Operation failed');
+    console.log(error);
   }
   return feedback;
 };

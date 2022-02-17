@@ -14,6 +14,7 @@ export interface User {
 export interface Admin {
   id: number;
   userId: number;
+  user: User;
 }
 
 export interface Student {
@@ -24,6 +25,7 @@ export interface Student {
   regNo: string;
   level?: Level;
   department?: Department;
+  user: User;
 }
 
 export interface Teacher {
@@ -31,6 +33,7 @@ export interface Teacher {
   userId: number;
   deptId: number;
   department?: any;
+  user: User;
 }
 
 export interface Level {

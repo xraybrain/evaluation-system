@@ -13,7 +13,8 @@ export class UpdateAdminRequest {
     public id: number,
     public surname?: string,
     public othernames?: string,
-    public email?: string
+    public email?: string,
+    public password?: string
   ) {}
 }
 

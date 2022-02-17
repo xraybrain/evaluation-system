@@ -17,6 +17,7 @@ export class UpdateStudentRequest {
     public surname?: string,
     public othernames?: string,
     public email?: string,
+    public password?: string,
     public regNo?: string,
     public levelId?: any,
     public deptId?: any

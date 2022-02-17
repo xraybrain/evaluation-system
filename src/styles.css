@@ -122,7 +122,18 @@ body {
   border-radius: 50%;
 }
 
+.table-wrapper table {
+  min-width: 800px;
+}
+
 /* Avatar */
+
+.table-wrapper {
+  max-width: 100%;
+  max-height: none;
+  overflow-x: auto;
+  overflow-y: visible;
+}
 
 /* Media Queries */
 @media screen and (max-width: 876px) {
@@ -143,6 +154,7 @@ body {
   .sidebar {
     width: 50%;
     z-index: 100;
+    display: none;
   }
 }
 

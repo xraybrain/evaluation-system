@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { months } from 'src/app/config/App.config';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -6,19 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admin-dashboard.component.css'],
 })
 export class AdminDashboardComponent implements OnInit {
-  months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'November',
-    'December',
-  ];
+  months = months;
   selectedMonth: { id: number; name: string } = { id: 1, name: 'January' };
   constructor() {}
 

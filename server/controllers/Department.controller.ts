@@ -48,13 +48,16 @@ export const getDepartmentController = async (req: Request, res: Response) => {
 };
 
 export const getDepartmentsController = async (req: Request, res: Response) => {
-  const { search } = req.query;
+  const { search, paginate } = req.query;
   const page = Number(req.query['page']) || 1;
-  let feedback = await getDepartments(page, `${search}`);
+  let feedback = await getDepartments(page, `${search}`, paginate === 'true');
   res.json(feedback);
 };
 
-export const updateDepartmentController = async (req: Request, res: Response) => {
+export const updateDepartmentController = async (
+  req: Request,
+  res: Response
+) => {
   const request: UpdateDepartmentRequest = req.body;
   const validation = await validator(UpdateDepartmentSchema, request);
   let feedback: Feedback;
@@ -67,7 +70,10 @@ export const updateDepartmentController = async (req: Request, res: Response) =>
   res.json(feedback);
 };
 
-export const deleteDepartmentController = async (req: Request, res: Response) => {
+export const deleteDepartmentController = async (
+  req: Request,
+  res: Response
+) => {
   const request: DeleteDepartmentRequest = req.body;
   const validation = await validator(DeleteDepartmentSchema, request);
   let feedback: Feedback;

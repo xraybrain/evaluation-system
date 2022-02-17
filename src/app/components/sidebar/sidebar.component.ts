@@ -8,6 +8,9 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SidebarComponent implements OnInit {
   @Input()
   userType: string | undefined;
+
+  @Input()
+  activeTab: string | undefined;
   constructor() {}
 
   ngOnInit(): void {}

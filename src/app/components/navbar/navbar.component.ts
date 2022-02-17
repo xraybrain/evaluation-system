@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID } from '@angular/core';
 import { User } from 'src/app/models/interface/User.interface';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -10,6 +11,10 @@ import { AuthService } from 'src/app/services/auth.service';
 export class NavbarComponent implements OnInit {
   public user: User | undefined;
   constructor(private readonly authService: AuthService) {}
+
+  onLogout() {
+    this.authService.logout();
+  }
 
   ngOnInit(): void {
     this.authService.currentUser().subscribe((response) => {

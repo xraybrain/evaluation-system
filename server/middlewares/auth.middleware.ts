@@ -3,6 +3,7 @@ import { decode } from 'jsonwebtoken';
 import { AppRequest } from 'server/models/App.model';
 import { UserType } from 'server/models/Enums';
 import { getUser } from 'server/services/User.service';
+import * as cookie from 'cookie';
 
 export const ensureAuthenticated = (
   req: Request,
@@ -12,8 +13,9 @@ export const ensureAuthenticated = (
   const authorization =
     (req.query['authorization'] as string) ||
     (req.headers['authorization'] as string);
+  console.log('ENSURE AUTH:: ' + authorization, typeof authorization);
 
-  if (!authorization) {
+  if (!authorization || authorization === 'undefined') {
     return res.status(401).send('Unauthorize');
   }
   return next();

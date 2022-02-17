@@ -126,6 +126,12 @@ export const getAdmins = async (page: number, search?: string) => {
 export const updateAdmin = async (request: UpdateAdminRequest) => {
   let feedback: Feedback;
   try {
+    let hash: string | undefined;
+    if (request.password) {
+      const salt = bcrypt.genSaltSync(SALT_ROUND);
+      hash = bcrypt.hashSync(request.password, salt);
+    }
+
     await prisma.admin.update({
       data: {
         user: {
@@ -133,6 +139,7 @@ export const updateAdmin = async (request: UpdateAdminRequest) => {
             surname: request.surname,
             othernames: request.othernames,
             email: request.email,
+            password: hash,
           },
         },
       },

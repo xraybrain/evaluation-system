@@ -17,9 +17,11 @@ export class DepartmentService {
     return this.http.post(`${this.API_URL}department`, request);
   }
 
-  findAll(page = 1, search?: string): Observable<Feedback> {
+  findAll(page = 1, search?: string, paginate = true): Observable<Feedback> {
     return this.http.get(
-      `${this.API_URL}departments?page=${page}&search=${search ? search : ''}`
+      `${this.API_URL}departments?page=${page}&search=${
+        search ? search : ''
+      }&paginate=${paginate}`
     );
   }
 

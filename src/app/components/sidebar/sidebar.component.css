@@ -31,7 +31,8 @@
 }
 
 .sidebar .navbar-nav li:not(.nav-label):hover,
-.sidebar .navbar-nav li a:hover {
+.sidebar .navbar-nav li a:hover,
+.sidebar .navbar-nav li a.active {
   background-color: #333;
   color: #eee;
   border-radius: 0.75em !important;

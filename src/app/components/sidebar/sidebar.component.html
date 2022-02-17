@@ -7,14 +7,14 @@
             Application
         </li>
         <li class="nav-item">
-            <a routerLink="/{{userType}}/dashboard/" class="nav-link">
+            <a routerLink="/{{userType}}/dashboard/" class="nav-link" [ngClass]="{'active': activeTab==='dashboard'}">
                 <i class="fas fa-th mr-2"></i>
                 Dashboard
             </a>
         </li>
 
         <li class="nav-item">
-            <a routerLink="/{{userType}}/account/" class="nav-link">
+            <a routerLink="/{{userType}}/account/" class="nav-link" [ngClass]="{'active': activeTab==='account'}">
                 <i class="fas fa-user mr-2"></i>
                 Account
             </a>
@@ -22,7 +22,8 @@
 
         <ng-container *ngIf="userType=='admin'">
             <li class="nav-item">
-                <a routerLink="/{{userType}}/department/" class="nav-link">
+                <a routerLink="/{{userType}}/department/" class="nav-link"
+                    [ngClass]="{'active': activeTab==='department'}">
                     <i class="fas fa-laptop-house mr-2"></i>
                     Department
                 </a>
@@ -35,14 +36,16 @@
 
         <ng-container *ngIf="userType=='admin'">
             <li class="nav-item">
-                <a routerLink="/{{userType}}/manage/admins/" class="nav-link">
+                <a routerLink="/{{userType}}/manage/admins/" class="nav-link"
+                    [ngClass]="{'active': activeTab==='admin'}">
                     <i class="fas fa-users-cog mr-2"></i>
                     Admin
                 </a>
             </li>
 
             <li class="nav-item">
-                <a routerLink="/{{userType}}/manage/teachers" class="nav-link">
+                <a routerLink="/{{userType}}/manage/teachers" class="nav-link"
+                    [ngClass]="{'active': activeTab==='teacher'}">
                     <i class="fas fa-user-friends mr-2"></i>
                     Teacher
                 </a>
@@ -51,7 +54,8 @@
 
         <ng-container *ngIf="userType=='admin' || userType=='teacher'">
             <li class="nav-item">
-                <a routerLink="/{{userType}}/manage/students" class="nav-link">
+                <a routerLink="/{{userType}}/manage/students" class="nav-link"
+                    [ngClass]="{'active': activeTab==='student'}">
                     <i class="fas fa-user-graduate mr-2"></i>
                     Student
                 </a>
@@ -59,7 +63,7 @@
         </ng-container>
 
         <li class="nav-item" *ngIf="userType=='teacher'">
-            <a routerLink="/{{userType}}/manage/courses/" class="nav-link">
+            <a routerLink="/{{userType}}/manage/courses/" class="nav-link" [ngClass]="{'active': activeTab==='course'}">
                 <i class="fas fa-list mr-2"></i>
                 Course
             </a>

@@ -92,16 +92,20 @@ export const getTeacher = async (id: number) => {
 
 export const getTeachers = async (page: number, search?: string) => {
   let feedback: Feedback;
+  console.log('Searching:: ' + search);
+
   try {
     let filter: any = { user: { deletedAt: { equals: null } } };
     if (search && search !== 'undefined') {
-      filter.user.surname = { contains: search };
-      filter.user.othernames = { contains: search };
+      filter.user.OR = [
+        { surname: { contains: search } },
+        { othernames: { contains: search } },
+      ];
     }
 
     let totalPages = await prisma.teacher.count({ where: filter });
     let pagination = new Pagination(page, 20, totalPages);
-
+    console.log(filter, pagination);
     feedback = new Feedback(true, 'success');
     feedback.results = await prisma.teacher.findMany({
       where: filter,
@@ -118,6 +122,7 @@ export const getTeachers = async (page: number, search?: string) => {
             type: true,
           },
         },
+        department: true,
       },
       orderBy: { user: { surname: 'asc' } },
     });
@@ -133,6 +138,12 @@ export const getTeachers = async (page: number, search?: string) => {
 export const updateTeacher = async (request: UpdateTeacherRequest) => {
   let feedback: Feedback;
   try {
+    let hash: string | undefined;
+    if (request.password) {
+      const salt = bcrypt.genSaltSync(SALT_ROUND);
+      hash = bcrypt.hashSync(request.password, salt);
+    }
+
     await prisma.teacher.update({
       data: {
         deptId: request.deptId,
@@ -141,6 +152,7 @@ export const updateTeacher = async (request: UpdateTeacherRequest) => {
             surname: request.surname,
             othernames: request.othernames,
             email: request.email,
+            password: hash,
           },
         },
       },
