@@ -1,4 +1,6 @@
+import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { AppRequest } from 'server/models/App.model';
 import {
   CreateDepartmentRequest,
   DeleteDepartmentRequest,
@@ -20,15 +22,16 @@ import {
 import { validator } from 'server/utils/yup.util';
 
 export const createDepartmentController = async (
-  req: Request,
+  req: AppRequest,
   res: Response
 ) => {
   const request: CreateDepartmentRequest = req.body;
   const validation = await validator(CreateDepartmentSchema, request);
+  const user = req.user as User;
   let feedback: Feedback;
 
   if (validation.isValid) {
-    feedback = await createDepartment(request);
+    feedback = await createDepartment(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -55,14 +58,16 @@ export const getDepartmentsController = async (req: Request, res: Response) => {
 };
 
 export const updateDepartmentController = async (
-  req: Request,
+  req: AppRequest,
   res: Response
 ) => {
   const request: UpdateDepartmentRequest = req.body;
   const validation = await validator(UpdateDepartmentSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await updateDepartment(request);
+    feedback = await updateDepartment(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -71,14 +76,16 @@ export const updateDepartmentController = async (
 };
 
 export const deleteDepartmentController = async (
-  req: Request,
+  req: AppRequest,
   res: Response
 ) => {
   const request: DeleteDepartmentRequest = req.body;
   const validation = await validator(DeleteDepartmentSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await deleteDepartment(request);
+    feedback = await deleteDepartment(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;

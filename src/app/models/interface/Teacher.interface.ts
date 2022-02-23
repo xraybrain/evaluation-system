@@ -18,3 +18,8 @@ export interface UpdateTeacherRequest {
 export interface DeleteTeacherRequest {
   id: number;
 }
+
+export interface TeacherDashboardStats {
+  students: number;
+  courses: number;
+}

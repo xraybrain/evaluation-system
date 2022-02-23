@@ -1,4 +1,6 @@
+import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { AppRequest } from 'server/models/App.model';
 import {
   CreateCourseRequest,
   DeleteCourseRequest,
@@ -19,13 +21,17 @@ import {
 } from 'server/services/Course.service';
 import { validator } from 'server/utils/yup.util';
 
-export const createCourseController = async (req: Request, res: Response) => {
+export const createCourseController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: CreateCourseRequest = req.body;
   const validation = await validator(CreateCourseSchema, request);
+  const user = req.user as User;
   let feedback: Feedback;
 
   if (validation.isValid) {
-    feedback = await createCourse(request);
+    feedback = await createCourse(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -54,12 +60,17 @@ export const getCoursesController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const updateCourseController = async (req: Request, res: Response) => {
+export const updateCourseController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: UpdateCourseRequest = req.body;
   const validation = await validator(UpdateCourseSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await updateCourse(request);
+    feedback = await updateCourse(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -67,12 +78,17 @@ export const updateCourseController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const deleteCourseController = async (req: Request, res: Response) => {
+export const deleteCourseController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: DeleteCourseRequest = req.body;
   const validation = await validator(DeleteCourseSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await deleteCourse(request);
+    feedback = await deleteCourse(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;

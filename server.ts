@@ -80,6 +80,7 @@ export function App(): http.Server {
 
   // Socket connection
   io.on('connection', (socket) => {
+    console.log('Opened connection');
     socket.on('connected', () => {
       console.log('connected');
     });

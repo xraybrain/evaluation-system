@@ -23,7 +23,11 @@ export default class AppRoute {
       changePasswordController
     );
     this.app.post('/api/reset/password', resetPasswordController);
-    this.app.get('/api/current/user', currentUserController);
+    this.app.get(
+      '/api/current/user',
+      ensureAuthenticated,
+      currentUserController
+    );
     this.app.get('/api/levels', getLevelsController);
   }
 }

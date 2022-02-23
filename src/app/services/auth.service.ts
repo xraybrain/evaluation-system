@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { LoginRequest } from '../models/Auth.model';
 import Feedback from '../models/interface/Feedback.interface';
@@ -17,7 +18,8 @@ export class AuthService {
   constructor(
     protected http: HttpClient,
     private readonly cookieService: CookieService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly toastr: ToastrService
   ) {}
 
   login(request: LoginRequest): Observable<Feedback> {
@@ -25,7 +27,9 @@ export class AuthService {
   }
 
   logout() {
+    this.toastr.info('Logging Out...', '', { disableTimeOut: true });
     this.http.post(`${this.API_URL}logout`, {}).subscribe(() => {
+      this.toastr.clear();
       this.removeAccessToken();
       this.router.navigate(['/login']);
     });

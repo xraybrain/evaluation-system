@@ -18,6 +18,8 @@ import { HeaderInterceptor } from './interceptor/HeaderInterceptor.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { NgChartsModule } from 'ng2-charts';
+
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AdminManagerComponent } from './components/admin-manager/admin-manager.component';
@@ -42,12 +44,23 @@ import { TeacherManageStudentsComponent } from './teacher/teacher-manage-student
 import { TopicFormComponent } from './modals/topic-form/topic-form.component';
 import { CourseFormComponent } from './modals/course-form/course-form.component';
 import { QuizFormComponent } from './modals/quiz-form/quiz-form.component';
+import { QuestionFormComponent } from './modals/question-form/question-form.component';
+import { QuestionOptionsComponent } from './modals/question-options/question-options.component';
+import { QuizResultsComponent } from './components/quiz-results/quiz-results.component';
+import { ResultComponent } from './components/result/result.component';
+import { TeacherQuizResultsComponent } from './teacher/teacher-quiz-results/teacher-quiz-results.component';
+import { QuizReportComponent } from './components/quiz-report/quiz-report.component';
+import { environment } from 'src/environments/environment';
+import { StudentAccountComponent } from './student/student-account/student-account.component';
+import { StudentResultsComponent } from './student/student-results/student-results.component';
+import { QuizzesComponent } from './student/quizzes/quizzes.component';
+import { QuizBoardComponent } from './student/quiz-board/quiz-board.component';
+import { QuizValidatorComponent } from './modals/quiz-validator/quiz-validator.component';
+import { TimerComponent } from './components/timer/timer.component';
 
 const config: SocketIoConfig = {
-  url: '', // socket server url;
-  options: {
-    transports: ['websocket'],
-  },
+  url: environment.socketUrl, // socket server url;
+  options: {},
 };
 
 @NgModule({
@@ -84,6 +97,18 @@ const config: SocketIoConfig = {
     TopicFormComponent,
     CourseFormComponent,
     QuizFormComponent,
+    QuestionFormComponent,
+    QuestionOptionsComponent,
+    QuizResultsComponent,
+    ResultComponent,
+    TeacherQuizResultsComponent,
+    QuizReportComponent,
+    StudentAccountComponent,
+    StudentResultsComponent,
+    QuizzesComponent,
+    QuizBoardComponent,
+    QuizValidatorComponent,
+    TimerComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -95,6 +120,7 @@ const config: SocketIoConfig = {
     ToastrModule.forRoot({ timeOut: 2000 }),
     CookieModule.forRoot(),
     SocketIoModule.forRoot(config),
+    NgChartsModule,
   ],
   entryComponents: [
     DepartmentFormComponent,
@@ -102,6 +128,7 @@ const config: SocketIoConfig = {
     ProfileCardComponent,
     CourseFormComponent,
     TopicFormComponent,
+    QuestionFormComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },

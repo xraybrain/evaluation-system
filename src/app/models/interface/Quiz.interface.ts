@@ -1,4 +1,5 @@
 import { Topic } from './Topic.interface';
+import { Student } from './User.interface';
 
 export interface CreateQuizRequest {
   token?: string;
@@ -23,4 +24,25 @@ export interface Quiz {
   topic: Topic;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface QuizResult {
+  score: number;
+  totalScore: number;
+  position: number;
+  student: Student;
+}
+
+export interface ReportDataset {
+  label: string;
+  data: number[];
+}
+
+export interface QuizReport {
+  labels: string[];
+  dataset: ReportDataset[];
+}
+export interface ValidateQuizTokenRequest {
+  quizId: number;
+  token: string;
 }

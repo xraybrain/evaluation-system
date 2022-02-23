@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { UserType } from 'server/models/Enums';
 import { Feedback } from 'server/models/Feedback.model';
 import * as bcrypt from 'bcryptjs';
@@ -12,7 +12,10 @@ import {
 const prisma = new PrismaClient();
 const SALT_ROUND = Number(process.env['SALT_ROUND']);
 
-export const createStudent = async (request: CreateStudentRequest) => {
+export const createStudent = async (
+  request: CreateStudentRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     const emailExists = await prisma.user.findFirst({
@@ -49,7 +52,7 @@ export const createStudent = async (request: CreateStudentRequest) => {
       });
 
       feedback = new Feedback(true, 'success');
-      feedback.result = await prisma.student.findFirst({
+      const newStudent = await prisma.student.findFirst({
         where: { userId: student.id },
         include: {
           user: {
@@ -63,6 +66,17 @@ export const createStudent = async (request: CreateStudentRequest) => {
           },
           department: true,
           level: true,
+        },
+      });
+
+      feedback.result = newStudent;
+
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          content: `Added new student '${newStudent?.user.surname} ${newStudent?.user.othernames}' record'`,
+          createdAt: new Date(),
         },
       });
     }
@@ -105,9 +119,6 @@ export const getStudents = async (page: number, search?: string) => {
   try {
     let filter: any = { user: { deletedAt: { equals: null } } };
     if (search && search !== 'undefined') {
-      // filter.user.surname = { contains: search };
-      // filter.user.othernames = { contains: search };
-      // filter.regNo = ;
       filter.OR = [
         { regNo: { contains: search } },
         {
@@ -156,7 +167,10 @@ export const getStudents = async (page: number, search?: string) => {
   return feedback;
 };
 
-export const updateStudent = async (request: UpdateStudentRequest) => {
+export const updateStudent = async (
+  request: UpdateStudentRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     let hash: string | undefined;
@@ -182,6 +196,14 @@ export const updateStudent = async (request: UpdateStudentRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Updated student '${request.id}' record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
     console.log(error);
@@ -189,7 +211,10 @@ export const updateStudent = async (request: UpdateStudentRequest) => {
   return feedback;
 };
 
-export const deleteStudent = async (request: DeleteStudentRequest) => {
+export const deleteStudent = async (
+  request: DeleteStudentRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     await prisma.student.update({
@@ -197,9 +222,117 @@ export const deleteStudent = async (request: DeleteStudentRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Deleted student '${request.id}' record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
     console.log(error);
+  }
+  return feedback;
+};
+
+// Returns a student's quiz result
+export const getStudentQuizResult = async (
+  studentId: number,
+  quizId: number
+) => {
+  let feedback: Feedback;
+  try {
+    feedback = new Feedback(true, 'success');
+    const result = await prisma.answer.aggregate({
+      _sum: { score: true },
+      where: { studentId, quizId },
+    });
+    const quizScore = await prisma.question.aggregate({
+      _sum: { score: true },
+      where: { quizId },
+    });
+    const student = await prisma.student.findFirst({
+      where: { id: studentId },
+      include: {
+        user: {
+          select: {
+            surname: true,
+            othernames: true,
+            avatar: true,
+            email: true,
+            type: true,
+          },
+        },
+      },
+    });
+    feedback.result = {
+      score: result._sum.score,
+      totalScore: quizScore._sum.score,
+      student,
+    };
+  } catch (error) {
+    console.log(error);
+    feedback = new Feedback(false, 'Operation failed');
+  }
+  return feedback;
+};
+
+// Returns a student result on all quizzes taken
+export const getStudentQuizzesResult = async (studentId: number) => {
+  let feedback: Feedback;
+  try {
+    feedback = new Feedback(true, 'success');
+    const student = await prisma.student.findFirst({
+      where: { id: studentId },
+      include: {
+        user: {
+          select: {
+            surname: true,
+            othernames: true,
+            avatar: true,
+            email: true,
+            type: true,
+          },
+        },
+      },
+    });
+
+    const res = await prisma.answer.groupBy({
+      by: ['studentId', 'quizId'],
+      _sum: { score: true },
+      where: { studentId },
+    });
+
+    const results = await Promise.all(
+      (
+        await prisma.answer.groupBy({
+          by: ['studentId', 'quizId'],
+          _sum: { score: true },
+          where: { studentId },
+        })
+      ).map(async (d) => {
+        const quizScore = await prisma.question.aggregate({
+          _sum: { score: true },
+          where: { quizId: d.quizId },
+        });
+
+        const quiz = await prisma.quiz.findFirst({ where: { id: d.quizId } });
+
+        return {
+          score: d._sum.score,
+          totalScore: quizScore._sum.score,
+          quiz,
+          student,
+        };
+      })
+    );
+
+    feedback.results = results;
+  } catch (error) {
+    console.log(error);
+    feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };

@@ -3,6 +3,7 @@ import {
   createTeacherController,
   deleteTeacherController,
   getTeacherController,
+  getTeacherDashboardStatsController,
   getTeachersController,
   updateTeacherController,
 } from 'server/controllers/Teacher.controller';
@@ -26,6 +27,11 @@ export default class TeacherRoute {
       '/api/teacher',
       ensureAuthenticated,
       deleteTeacherController
+    );
+    this.app.get(
+      '/api/teacher/dashboard/stats',
+      ensureAuthenticated,
+      getTeacherDashboardStatsController
     );
   }
 }

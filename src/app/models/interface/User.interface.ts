@@ -40,3 +40,17 @@ export interface Level {
   id: number;
   name: string;
 }
+
+export interface Activity {
+  id: number;
+  content: string;
+  userId: number;
+  user: User;
+  createdAt: string;
+}
+
+export interface UpdateUserRequest {
+  surname?: string;
+  othernames?: string;
+  email?: string;
+}

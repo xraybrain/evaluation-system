@@ -35,4 +35,8 @@ export class TeacherService {
       body: { id },
     });
   }
+
+  getTeacherDashboardStats(): Observable<Feedback> {
+    return this.http.get(`${this.API_URL}teacher/dashboard/stats`);
+  }
 }

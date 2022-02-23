@@ -3,6 +3,8 @@ import {
   createStudentController,
   deleteStudentController,
   getStudentController,
+  getStudentQuizResultController,
+  getStudentQuizzesResultController,
   getStudentsController,
   updateStudentController,
 } from 'server/controllers/Student.controller';
@@ -26,6 +28,16 @@ export default class StudentRoute {
       '/api/student',
       ensureAuthenticated,
       deleteStudentController
+    );
+    this.app.get(
+      '/api/student/result/:studentId/:quizId',
+      ensureAuthenticated,
+      getStudentQuizResultController
+    );
+    this.app.get(
+      '/api/student/quizzes/result/:studentId',
+      ensureAuthenticated,
+      getStudentQuizzesResultController
     );
   }
 }

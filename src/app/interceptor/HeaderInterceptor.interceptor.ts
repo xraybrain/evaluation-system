@@ -7,10 +7,9 @@ import {
   HttpEventType,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, Observable, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { platformBrowser } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
@@ -27,13 +26,8 @@ export class HeaderInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (request instanceof HttpRequest) {
-      const accessToken = this.authService.accessToken;
-      if (accessToken) {
-        request = request.clone({
-          setHeaders: { Authorization: accessToken },
-        });
-      }
+    if (!this.isBrowser) {
+      return EMPTY;
     }
 
     return next.handle(request).pipe(
@@ -48,7 +42,6 @@ export class HeaderInterceptor implements HttpInterceptor {
         return event;
       }),
       catchError((err: HttpErrorResponse, caught) => {
-        console.log(isPlatformBrowser(PLATFORM_ID));
         if (err.status === 401 && this.isBrowser) {
           this.authService.logout();
         }

@@ -15,3 +15,10 @@ export interface UpdateAdminRequest {
 export interface DeleteAdminRequest {
   id: number;
 }
+
+export interface AdminDashboardStats {
+  students: number;
+  teachers: number;
+  admins: number;
+  departments: number;
+}

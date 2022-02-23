@@ -1,7 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { Answer, PrismaClient, User } from '@prisma/client';
+import { UserType } from 'server/models/Enums';
 import { Feedback } from 'server/models/Feedback.model';
 import Pagination from 'server/models/Pagination.model';
 import {
+  CreateQuestionOptionRequest,
   CreateQuestionRequest,
   DeleteQuestionOptionRequest,
   DeleteQuestionRequest,
@@ -58,7 +60,10 @@ export const getQuestion = async (id: number) => {
 export const getQuestions = async (
   page = 1,
   quizId: number,
-  search?: string
+  user: User,
+  search?: string,
+  paginate = true,
+  time = 0
 ) => {
   let feedback: Feedback;
   try {
@@ -66,23 +71,39 @@ export const getQuestions = async (
     if (search && search !== 'undefined') {
       filter.question = { contains: search };
     }
-    let totalPages = await prisma.question.count({ where: filter });
-    let pagination = new Pagination(page, 20, totalPages);
-    feedback = new Feedback(true, 'success');
-    feedback.results = await prisma.question.findMany({
+
+    if (time > 0) {
+      let date = new Date(time);
+      filter.createdAt = { gte: date };
+    }
+
+    const query: any = {
       where: filter,
-      skip: pagination.skip,
-      take: pagination.take,
       orderBy: { createdAt: 'desc' },
       select: {
+        id: true,
         question: true,
-        createdAt: true,
+        score: user.type !== UserType.Student,
+        answer: user.type !== UserType.Student,
         timeout: true,
         options: true,
+        quiz: true,
+        quizId: true,
+        createdAt: true,
       },
-    });
-    feedback.page = pagination.page;
-    feedback.pages = pagination.totalPages;
+    };
+
+    feedback = new Feedback(true, 'success');
+    if (paginate) {
+      let totalPages = await prisma.question.count({ where: filter });
+      let pagination = new Pagination(page, 20, totalPages);
+      query.skip = pagination.skip;
+      query.take = pagination.take;
+      feedback.page = pagination.page;
+      feedback.pages = pagination.totalPages;
+    }
+
+    feedback.results = await prisma.question.findMany(query);
   } catch (error) {
     console.log(error);
     feedback = new Feedback(false, 'Operation failed');
@@ -123,34 +144,81 @@ export const deleteQuestion = async (request: DeleteQuestionRequest) => {
   return feedback;
 };
 
-
-
-export const updateQuestionOption = async (request: UpdateQuestionOptionRequest) => {
+export const createQuestionOption = async (
+  request: CreateQuestionOptionRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
-    await prisma.option.update({
+    feedback = new Feedback(true, 'success');
+    const newQuestion = await prisma.option.create({
       data: {
-        option: request.option
+        option: request.option,
+        questionId: request.questionId,
+      },
+    });
+    feedback.result = newQuestion;
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `added new question record'`,
+        createdAt: new Date(),
+      },
+    });
+  } catch (error) {
+    feedback = new Feedback(false, 'Operation failed');
+  }
+  return feedback;
+};
+
+export const updateQuestionOption = async (
+  request: UpdateQuestionOptionRequest,
+  user: User
+) => {
+  let feedback: Feedback;
+  try {
+    const updated = await prisma.option.update({
+      data: {
+        option: request.option,
       },
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `updated question (${updated.id}) record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };
 
-export const deleteQuestionOption = async (request: DeleteQuestionOptionRequest) => {
+export const deleteQuestionOption = async (
+  request: DeleteQuestionOptionRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
-    await prisma.option.delete({
+    const deleted = await prisma.option.delete({
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `deleted question (${deleted.id}) record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };
-

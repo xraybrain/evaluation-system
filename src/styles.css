@@ -128,14 +128,54 @@ body {
 
 /* Avatar */
 
-.table-wrapper {
-  max-width: 100%;
-  max-height: none;
-  overflow-x: auto;
-  overflow-y: visible;
+.hide-toggle::after {
+  display: none !important;
+}
+
+.w-90 {
+  width: 90% !important;
+}
+
+.static-circle {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  border: 0.1rem solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-control input[type="text"],
+.form-control input[type="password"],
+.form-control input[type="number"],
+.form-control textarea,
+.form-control select {
+  width: 100%;
+  outline: 0;
+  border: 0;
+}
+
+.form-control input[type="text"]:focus,
+.form-control input[type="password"]:focus,
+.form-control input[type="number"]:focus,
+.form-control textarea:focus,
+.form-control select:focus {
+  width: 100%;
+  outline: 0;
+  border: 0;
 }
 
 /* Media Queries */
+@media screen and (max-width: 1200px) {
+  .table-wrapper {
+    max-width: 100%;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+}
+
 @media screen and (max-width: 876px) {
   .main-content {
     width: 70%;
@@ -155,6 +195,10 @@ body {
     width: 50%;
     z-index: 100;
     display: none;
+  }
+
+  .w-xs-100 {
+    width: 100% !important;
   }
 }
 

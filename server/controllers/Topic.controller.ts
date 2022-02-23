@@ -1,4 +1,6 @@
+import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { AppRequest } from 'server/models/App.model';
 import { Feedback } from 'server/models/Feedback.model';
 import {
   CreateTopicSchema,
@@ -19,13 +21,15 @@ import {
 } from 'server/services/Topic.service';
 import { validator } from 'server/utils/yup.util';
 
-export const createTopicController = async (req: Request, res: Response) => {
+export const createTopicController = async (req: AppRequest, res: Response) => {
   const request: CreateTopicRequest = req.body;
   const validation = await validator(CreateTopicSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
 
   if (validation.isValid) {
-    feedback = await createTopic(request);
+    feedback = await createTopic(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -52,12 +56,14 @@ export const getTopicsController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const updateTopicController = async (req: Request, res: Response) => {
+export const updateTopicController = async (req: AppRequest, res: Response) => {
   const request: UpdateTopicRequest = req.body;
   const validation = await validator(UpdateTopicSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await updateTopic(request);
+    feedback = await updateTopic(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -65,12 +71,14 @@ export const updateTopicController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const deleteTopicController = async (req: Request, res: Response) => {
+export const deleteTopicController = async (req: AppRequest, res: Response) => {
   const request: DeleteTopicRequest = req.body;
   const validation = await validator(DeleteTopicSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await deleteTopic(request);
+    feedback = await deleteTopic(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;

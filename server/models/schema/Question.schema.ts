@@ -22,6 +22,11 @@ export const DeleteQuestionSchema = object().shape({
   id: number().integer('Invalid id').required('Id is required'),
 });
 
+export const CreateQuestionOptionSchema = object().shape({
+  questionId: number().integer('Invalid id').required('Id is required'),
+  option: string().required('Option is required'),
+});
+
 export const UpdateQuestionOptionSchema = object().shape({
   id: number().integer('Invalid id').required('Id is required'),
   option: string().optional(),

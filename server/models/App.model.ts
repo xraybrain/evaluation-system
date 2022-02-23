@@ -1,6 +1,10 @@
 import { User } from '@prisma/client';
 import { Request } from 'express';
 
+export interface AppRequest extends Request {
+  user?: User | null;
+}
+
 export class LoginRequest {
   constructor(public email: string, public password: string) {}
 }
@@ -23,10 +27,6 @@ export class RefreshAccessTokenRequest {
     public userId: number,
     public userType: string
   ) {}
-}
-
-export interface AppRequest extends Request {
-  user?: User | null;
 }
 
 export class ChangePasswordRequest {

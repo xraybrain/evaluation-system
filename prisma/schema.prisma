@@ -79,16 +79,15 @@ model Teacher {
 }
 
 model Student {
-  id          Int          @id @default(autoincrement())
-  userId      Int          @unique
-  user        User         @relation(fields: [userId], references: [id])
-  regNo       String       @db.VarChar(100)
-  levelId     Int
-  level       Level        @relation(fields: [levelId], references: [id])
-  deptId      Int
-  department  Department   @relation(fields: [deptId], references: [id])
-  answers     Answer[]
-  quizResults QuizResult[]
+  id         Int        @id @default(autoincrement())
+  userId     Int        @unique
+  user       User       @relation(fields: [userId], references: [id])
+  regNo      String     @db.VarChar(100)
+  levelId    Int
+  level      Level      @relation(fields: [levelId], references: [id])
+  deptId     Int
+  department Department @relation(fields: [deptId], references: [id])
+  answers    Answer[]
 }
 
 model Course {
@@ -118,14 +117,14 @@ model Topic {
 }
 
 model Quiz {
-  id          Int          @id @default(autoincrement())
-  token       String       @unique @db.VarChar(15)
-  title       String
-  active      Boolean      @default(false)
-  topicId     Int
-  topic       Topic        @relation(fields: [topicId], references: [id])
-  questions   Question[]
-  quizResults QuizResult[]
+  id        Int        @id @default(autoincrement())
+  token     String     @db.VarChar(15)
+  title     String
+  active    Boolean    @default(false)
+  topicId   Int
+  topic     Topic      @relation(fields: [topicId], references: [id])
+  questions Question[]
+  answers   Answer[]
 
   createdAt DateTime
   updatedAt DateTime  @updatedAt
@@ -161,20 +160,10 @@ model Answer {
   Question   Question @relation(fields: [questionId], references: [id])
   studentId  Int
   student    Student  @relation(fields: [studentId], references: [id])
+  quizId     Int
+  quiz       Quiz     @relation(fields: [quizId], references: [id])
   answer     String
-
-  createdAt DateTime
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-}
-
-model QuizResult {
-  id        Int     @id @default(autoincrement())
-  score     Int     @default(0)
-  quizId    Int
-  quiz      Quiz    @relation(fields: [quizId], references: [id])
-  studentId Int
-  student   Student @relation(fields: [studentId], references: [id])
+  score      Int
 
   createdAt DateTime
   updatedAt DateTime  @updatedAt

@@ -17,3 +17,8 @@ export const UpdateQuizSchema = object().shape({
 export const DeleteQuizSchema = object().shape({
   id: number().integer('Invalid id').required('Id is required'),
 });
+
+export const ValidateQuizTokenSchema = object().shape({
+  quizId: number().integer('Invalid id').required('Id is required'),
+  token: string().required('Token is required'),
+});

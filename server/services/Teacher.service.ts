@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { UserType } from 'server/models/Enums';
 import { Feedback } from 'server/models/Feedback.model';
 import * as bcrypt from 'bcryptjs';
@@ -12,7 +12,10 @@ import {
 const prisma = new PrismaClient();
 const SALT_ROUND = Number(process.env['SALT_ROUND']);
 
-export const createTeacher = async (request: CreateTeacherRequest) => {
+export const createTeacher = async (
+  request: CreateTeacherRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     const emailExists = await prisma.user.findFirst({
@@ -41,7 +44,7 @@ export const createTeacher = async (request: CreateTeacherRequest) => {
       });
 
       feedback = new Feedback(true, 'success');
-      feedback.result = await prisma.teacher.findFirst({
+      const newTeacher = await prisma.teacher.findFirst({
         where: { userId: teacher.id },
         include: {
           user: {
@@ -54,6 +57,17 @@ export const createTeacher = async (request: CreateTeacherRequest) => {
             },
           },
           department: true,
+        },
+      });
+
+      feedback.result = newTeacher;
+
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          content: `Added new teacher '${newTeacher?.user.surname} ${newTeacher?.user.surname}' record'`,
+          createdAt: new Date(),
         },
       });
     }
@@ -135,7 +149,10 @@ export const getTeachers = async (page: number, search?: string) => {
   return feedback;
 };
 
-export const updateTeacher = async (request: UpdateTeacherRequest) => {
+export const updateTeacher = async (
+  request: UpdateTeacherRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     let hash: string | undefined;
@@ -159,6 +176,14 @@ export const updateTeacher = async (request: UpdateTeacherRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Updated teacher '${request.id}' record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
     console.log(error);
@@ -166,7 +191,10 @@ export const updateTeacher = async (request: UpdateTeacherRequest) => {
   return feedback;
 };
 
-export const deleteTeacher = async (request: DeleteTeacherRequest) => {
+export const deleteTeacher = async (
+  request: DeleteTeacherRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     await prisma.teacher.update({
@@ -174,9 +202,39 @@ export const deleteTeacher = async (request: DeleteTeacherRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Deleted teacher '${request.id}' record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
     console.log(error);
+  }
+  return feedback;
+};
+
+export const getTeacherDashboardStats = async () => {
+  let feedback: Feedback;
+  try {
+    const students = await prisma.student.count({
+      where: { user: { deletedAt: { equals: null } } },
+    });
+
+    const courses = await prisma.course.count({
+      where: { deletedAt: { equals: null } },
+    });
+    feedback = new Feedback(true, 'success');
+    feedback.result = {
+      students,
+      courses,
+    };
+  } catch (error) {
+    console.log(error);
+    feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };

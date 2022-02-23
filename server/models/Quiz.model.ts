@@ -19,3 +19,7 @@ export class UpdateQuizRequest {
 export class DeleteQuizRequest {
   constructor(public id: number) {}
 }
+
+export class ValidateQuizTokenRequest {
+  constructor(public quizId: number, public token: string) {}
+}

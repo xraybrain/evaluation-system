@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import {
   createQuestionController,
+  createQuestionOptionController,
   deleteQuestionController,
   deleteQuestionOptionController,
   getQuestionController,
@@ -40,6 +41,11 @@ export default class QuestionRoute {
       '/api/question',
       ensureAuthenticated,
       deleteQuestionController
+    );
+    this.app.post(
+      '/api/question/option/',
+      ensureAuthenticated,
+      createQuestionOptionController
     );
     this.app.put(
       '/api/question/option/',

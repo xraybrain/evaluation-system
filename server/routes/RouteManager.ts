@@ -11,6 +11,7 @@ import QuizRoute from './Quiz.route';
 import StudentRoute from './Student.route';
 import TeacherRoute from './Teacher.route';
 import TopicRoute from './Topic.route';
+import UserRoute from './User.route';
 
 export default class RouteManager {
   constructor(private app: Application) {
@@ -28,5 +29,6 @@ export default class RouteManager {
     new QuizRoute(this.app);
     new QuestionRoute(this.app);
     new AnswerRoute(this.app);
+    new UserRoute(this.app);
   }
 }

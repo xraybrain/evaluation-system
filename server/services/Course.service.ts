@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import {
   CreateCourseRequest,
   DeleteCourseRequest,
@@ -9,7 +9,10 @@ import Pagination from 'server/models/Pagination.model';
 
 const prisma = new PrismaClient();
 
-export const createCourse = async (request: CreateCourseRequest) => {
+export const createCourse = async (
+  request: CreateCourseRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     const courseCodeExists = await prisma.course.findFirst({
@@ -39,6 +42,14 @@ export const createCourse = async (request: CreateCourseRequest) => {
           code: request.code,
           title: request.title,
           teacherId: request.teacherId,
+          createdAt: new Date(),
+        },
+      });
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          content: `Added a new course '${request.title}'`,
           createdAt: new Date(),
         },
       });
@@ -96,28 +107,51 @@ export const getCourses = async (
   return feedback;
 };
 
-export const updateCourse = async (request: UpdateCourseRequest) => {
+export const updateCourse = async (
+  request: UpdateCourseRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
-    await prisma.course.update({
+    const updated = await prisma.course.update({
       data: { title: request.title, code: request.code },
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Updated a course '${updated.title}'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };
 
-export const deleteCourse = async (request: DeleteCourseRequest) => {
+export const deleteCourse = async (
+  request: DeleteCourseRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
-    await prisma.course.update({
+    const deleted = await prisma.course.update({
       data: { deletedAt: new Date() },
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `deleted a course '${deleted.title}'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }

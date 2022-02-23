@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { decode } from 'jsonwebtoken';
 import { AppRequest } from 'server/models/App.model';
 import { UserType } from 'server/models/Enums';
-import { getUser } from 'server/services/User.service';
 import * as cookie from 'cookie';
 
 export const ensureAuthenticated = (
@@ -13,6 +11,8 @@ export const ensureAuthenticated = (
   const authorization =
     (req.query['authorization'] as string) ||
     (req.headers['authorization'] as string);
+  // const cookies = cookie.parse(req.headers.cookie || '');
+  // const authorization = cookies['access-token'];
   console.log('ENSURE AUTH:: ' + authorization, typeof authorization);
 
   if (!authorization || authorization === 'undefined') {

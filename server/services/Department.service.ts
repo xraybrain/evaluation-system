@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import {
   CreateDepartmentRequest,
   DeleteDepartmentRequest,
@@ -9,7 +9,10 @@ import Pagination from 'server/models/Pagination.model';
 
 const prisma = new PrismaClient();
 
-export const createDepartment = async (request: CreateDepartmentRequest) => {
+export const createDepartment = async (
+  request: CreateDepartmentRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
     const departmentExists = await prisma.department.findFirst({
@@ -18,8 +21,17 @@ export const createDepartment = async (request: CreateDepartmentRequest) => {
 
     if (!departmentExists) {
       feedback = new Feedback(true, 'success');
-      feedback.result = await prisma.department.create({
+      const newDepartment = await prisma.department.create({
         data: { name: request.name, createdAt: new Date() },
+      });
+      feedback.result = newDepartment;
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          content: `created new department '${newDepartment.name}'`,
+          createdAt: new Date(),
+        },
       });
     } else {
       feedback = new Feedback(false, 'Department already exists');
@@ -67,12 +79,6 @@ export const getDepartments = async (
     query.where = filter;
     feedback = new Feedback(true, 'success');
     feedback.results = await prisma.department.findMany(query);
-    // {
-    //   where: filter,
-    //   skip: pagination.skip,
-    //   take: pagination.take,
-    //   orderBy: { name: 'asc' },
-    // }
     feedback.page = pagination.page;
     feedback.pages = pagination.totalPages;
   } catch (error) {
@@ -82,28 +88,50 @@ export const getDepartments = async (
   return feedback;
 };
 
-export const updateDepartment = async (request: UpdateDepartmentRequest) => {
+export const updateDepartment = async (
+  request: UpdateDepartmentRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
-    await prisma.department.update({
+    const updated = await prisma.department.update({
       data: { name: request.name },
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `updated department '${updated.name} record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };
 
-export const deleteDepartment = async (request: DeleteDepartmentRequest) => {
+export const deleteDepartment = async (
+  request: DeleteDepartmentRequest,
+  user: User
+) => {
   let feedback: Feedback;
   try {
-    await prisma.department.update({
+    const deleted = await prisma.department.update({
       data: { deletedAt: new Date() },
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `deleted department '${deleted.name} record'`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }

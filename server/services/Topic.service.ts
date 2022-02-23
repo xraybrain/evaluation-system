@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { Feedback } from 'server/models/Feedback.model';
 import Pagination from 'server/models/Pagination.model';
 import {
@@ -9,7 +9,7 @@ import {
 
 const prisma = new PrismaClient();
 
-export const createTopic = async (request: CreateTopicRequest) => {
+export const createTopic = async (request: CreateTopicRequest, user: User) => {
   let feedback: Feedback;
   try {
     const titleExists = await prisma.topic.findFirst({
@@ -29,6 +29,15 @@ export const createTopic = async (request: CreateTopicRequest) => {
           title: request.title,
           description: request.description,
           courseId: request.courseId,
+          createdAt: new Date(),
+        },
+      });
+
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          content: `Added new topic (${feedback.result.id}) record`,
           createdAt: new Date(),
         },
       });
@@ -81,7 +90,7 @@ export const getTopics = async (
   return feedback;
 };
 
-export const updateTopic = async (request: UpdateTopicRequest) => {
+export const updateTopic = async (request: UpdateTopicRequest, user: User) => {
   let feedback: Feedback;
   try {
     await prisma.topic.update({
@@ -89,13 +98,21 @@ export const updateTopic = async (request: UpdateTopicRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Updated topic (${request.id}) record`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };
 
-export const deleteTopic = async (request: DeleteTopicRequest) => {
+export const deleteTopic = async (request: DeleteTopicRequest, user: User) => {
   let feedback: Feedback;
   try {
     await prisma.topic.update({
@@ -103,6 +120,14 @@ export const deleteTopic = async (request: DeleteTopicRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `Deleted topic (${request.id}) record`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }

@@ -5,6 +5,7 @@ import Feedback from '../models/interface/Feedback.interface';
 import {
   CreateQuizRequest,
   UpdateQuizRequest,
+  ValidateQuizTokenRequest,
 } from '../models/interface/Quiz.interface';
 import LinkManager from '../models/LinkManager.model';
 
@@ -23,17 +24,19 @@ export class QuizService {
     page = 1,
     topicId: number,
     search?: string,
-    paginate = true
+    active = false
   ): Observable<Feedback> {
-    return this.http.get(
-      `${this.API_URL}quizzes?page=${page}&tid=${topicId}&search=${
-        search ? search : ''
-      }&paginate=${paginate}`
-    );
+    return this.http.get(`${this.API_URL}quizzes`, {
+      params: { page, tid: topicId, search: search ? search : '', active },
+    });
   }
 
-  findOne(id: number): Observable<Feedback> {
-    return this.http.get(`${this.API_URL}quiz/${id}`);
+  findOne(option: { id?: number; token?: string }): Observable<Feedback> {
+    return this.http.get(
+      `${this.API_URL}quiz/?id=${option.id ? option.id : ''}&token=${
+        option.token ? option.token : ''
+      }`
+    );
   }
 
   findAndUpdate(request: UpdateQuizRequest): Observable<Feedback> {
@@ -45,5 +48,17 @@ export class QuizService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       body: { id },
     });
+  }
+
+  findQuizResults(quizId: number): Observable<Feedback> {
+    return this.http.get(`${this.API_URL}quiz/results/${quizId}`);
+  }
+
+  generateQuizReport(quizId: number): Observable<Feedback> {
+    return this.http.get(`${this.API_URL}quiz/report/${quizId}`);
+  }
+
+  validateQuizToken(request: ValidateQuizTokenRequest): Observable<Feedback> {
+    return this.http.post(`${this.API_URL}quiz/validate/token/`, request);
   }
 }

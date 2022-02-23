@@ -42,7 +42,7 @@
                                     <td>{{student.level?.name}}</td>
                                     <td>{{student.department?.name}}</td>
                                     <td>
-                                        <div ngbDropdown placement="bottom">
+                                        <div ngbDropdown [placement]="['bottom', 'auto']">
                                             <button ngbDropdownToggle class="btn btn-info">
                                                 More
                                             </button>

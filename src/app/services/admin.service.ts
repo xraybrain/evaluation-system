@@ -25,7 +25,7 @@ export class AdminService {
     );
   }
 
-  findAnduUpdate(request: UpdateAdminRequest): Observable<Feedback> {
+  findAndUpdate(request: UpdateAdminRequest): Observable<Feedback> {
     return this.http.put(`${this.API_URL}admin`, request);
   }
 
@@ -34,5 +34,9 @@ export class AdminService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       body: { id },
     });
+  }
+
+  getAdminDashboardStats(): Observable<Feedback> {
+    return this.http.get(`${this.API_URL}admin/dashboard/stats`);
   }
 }

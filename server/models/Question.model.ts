@@ -24,6 +24,10 @@ export class DeleteQuestionRequest {
   constructor(public id: number) {}
 }
 
+export class CreateQuestionOptionRequest {
+  constructor(public option: string, public questionId: number) {}
+}
+
 export class UpdateQuestionOptionRequest {
   constructor(public id: number, public option?: string) {}
 }

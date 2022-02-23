@@ -1,6 +1,9 @@
+import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { AppRequest } from 'server/models/App.model';
 import { Feedback } from 'server/models/Feedback.model';
 import {
+  CreateQuestionOptionRequest,
   CreateQuestionRequest,
   DeleteQuestionOptionRequest,
   DeleteQuestionRequest,
@@ -9,6 +12,7 @@ import {
 } from 'server/models/Question.model';
 import { DeleteAdminSchema } from 'server/models/schema/Admin.schema';
 import {
+  CreateQuestionOptionSchema,
   CreateQuestionSchema,
   DeleteQuestionOptionSchema,
   DeleteQuestionSchema,
@@ -17,6 +21,7 @@ import {
 } from 'server/models/schema/Question.schema';
 import {
   createQuestion,
+  createQuestionOption,
   deleteQuestion,
   deleteQuestionOption,
   getQuestion,
@@ -51,11 +56,23 @@ export const getQuestionController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const getQuestionsController = async (req: Request, res: Response) => {
-  const { search, qid } = req.query;
+export const getQuestionsController = async (
+  req: AppRequest,
+  res: Response
+) => {
+  const { search, qid, paginate, time } = req.query;
   const page = Number(req.query['page']) || 1;
   const quizId = qid ? Number(qid) : 0;
-  let feedback = await getQuestions(page, quizId, `${search}`);
+  const user = req.user;
+
+  let feedback = await getQuestions(
+    page,
+    quizId,
+    user as User,
+    `${search}`,
+    paginate === 'true',
+    Number(time)
+  );
   res.json(feedback);
 };
 
@@ -85,15 +102,33 @@ export const deleteQuestionController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
+export const createQuestionOptionController = async (
+  req: AppRequest,
+  res: Response
+) => {
+  const request: CreateQuestionOptionRequest = req.body;
+  const validation = await validator(CreateQuestionOptionSchema, request);
+  const user = req.user as User;
+  let feedback: Feedback;
+  if (validation.isValid) {
+    feedback = await createQuestionOption(request, user);
+  } else {
+    feedback = new Feedback(false, validation.errors.join(','));
+    feedback.errors = validation.errors;
+  }
+  res.json(feedback);
+};
+
 export const updateQuestionOptionController = async (
-  req: Request,
+  req: AppRequest,
   res: Response
 ) => {
   const request: UpdateQuestionOptionRequest = req.body;
   const validation = await validator(UpdateQuestionOptionSchema, request);
+  const user = req.user as User;
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await updateQuestionOption(request);
+    feedback = await updateQuestionOption(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -102,14 +137,16 @@ export const updateQuestionOptionController = async (
 };
 
 export const deleteQuestionOptionController = async (
-  req: Request,
+  req: AppRequest,
   res: Response
 ) => {
   const request: DeleteQuestionOptionRequest = req.body;
   const validation = await validator(DeleteQuestionOptionSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await deleteQuestionOption(request);
+    feedback = await deleteQuestionOption(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;

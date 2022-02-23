@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import {
   CreateAdminRequest,
   DeleteAdminRequest,
@@ -12,7 +12,7 @@ import Pagination from 'server/models/Pagination.model';
 const prisma = new PrismaClient();
 const SALT_ROUND = Number(process.env['SALT_ROUND']);
 
-export const createAdmin = async (request: CreateAdminRequest) => {
+export const createAdmin = async (request: CreateAdminRequest, user: User) => {
   let feedback: Feedback;
   try {
     const emailExists = await prisma.user.findFirst({
@@ -33,7 +33,7 @@ export const createAdmin = async (request: CreateAdminRequest) => {
         },
       });
       feedback = new Feedback(true, 'success');
-      feedback.result = await prisma.admin.findFirst({
+      const newAdmin = await prisma.admin.findFirst({
         where: { userId: admin.id },
         select: {
           userId: true,
@@ -46,6 +46,15 @@ export const createAdmin = async (request: CreateAdminRequest) => {
               type: true,
             },
           },
+        },
+      });
+      feedback.result = newAdmin;
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          content: `created a new admin '${newAdmin?.user.surname} {newAdmin?.user.othernames}'`,
+          createdAt: new Date(),
         },
       });
     } else {
@@ -123,7 +132,7 @@ export const getAdmins = async (page: number, search?: string) => {
   return feedback;
 };
 
-export const updateAdmin = async (request: UpdateAdminRequest) => {
+export const updateAdmin = async (request: UpdateAdminRequest, user: User) => {
   let feedback: Feedback;
   try {
     let hash: string | undefined;
@@ -145,7 +154,20 @@ export const updateAdmin = async (request: UpdateAdminRequest) => {
       },
       where: { id: Number(request.id) },
     });
+
     feedback = new Feedback(true, 'success');
+    const updated = await prisma.admin.findFirst({
+      where: { id: Number(request.id) },
+      include: { user: true },
+    });
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `updated a admin '${updated?.user.surname} ${updated?.user.othernames}' record`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
     console.log(error);
@@ -153,7 +175,7 @@ export const updateAdmin = async (request: UpdateAdminRequest) => {
   return feedback;
 };
 
-export const deleteAdmin = async (request: DeleteAdminRequest) => {
+export const deleteAdmin = async (request: DeleteAdminRequest, user: User) => {
   let feedback: Feedback;
   try {
     await prisma.admin.update({
@@ -161,9 +183,54 @@ export const deleteAdmin = async (request: DeleteAdminRequest) => {
       where: { id: Number(request.id) },
     });
     feedback = new Feedback(true, 'success');
+    const updated = await prisma.admin.findFirst({
+      where: { id: Number(request.id) },
+      include: { user: true },
+    });
+    // Track Activity
+    await prisma.activity.create({
+      data: {
+        userId: user.id,
+        content: `updated a admin '${updated?.user.surname} ${updated?.user.othernames}' record`,
+        createdAt: new Date(),
+      },
+    });
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
     console.log(error);
+  }
+  return feedback;
+};
+
+export const getAdminDashboardStats = async () => {
+  let feedback: Feedback;
+  try {
+    const admins = await prisma.admin.count({
+      where: { user: { deletedAt: { equals: null } } },
+    });
+
+    const students = await prisma.student.count({
+      where: { user: { deletedAt: { equals: null } } },
+    });
+
+    const teachers = await prisma.student.count({
+      where: { user: { deletedAt: { equals: null } } },
+    });
+
+    const departments = await prisma.department.count({
+      where: { deletedAt: { equals: null } },
+    });
+
+    feedback = new Feedback(true, 'success');
+    feedback.result = {
+      admins,
+      teachers,
+      students,
+      departments,
+    };
+  } catch (error) {
+    console.log(error);
+    feedback = new Feedback(false, 'Operation failed');
   }
   return feedback;
 };

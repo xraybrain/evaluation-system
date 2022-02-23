@@ -38,7 +38,7 @@
                                     <td>{{teacher.user.email}}</td>
                                     <td>{{teacher.department?.name}}</td>
                                     <td>
-                                        <div ngbDropdown placement="bottom">
+                                        <div ngbDropdown [placement]="['bottom', 'auto']">
                                             <button ngbDropdownToggle class="btn btn-info">
                                                 More
                                             </button>

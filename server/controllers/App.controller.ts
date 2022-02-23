@@ -22,7 +22,7 @@ import {
   logout,
   resetPassword,
 } from 'server/services/App.service';
-import { getUser } from 'server/services/User.service';
+import { getUser, getUserActivities } from 'server/services/User.service';
 import { validator } from 'server/utils/yup.util';
 
 export const loginController = async (req: Request, res: Response) => {
@@ -116,9 +116,13 @@ export const changePasswordController = async (
   }
   res.json(feedback);
 };
-export const resetPasswordController = async (req: Request, res: Response) => {
+export const resetPasswordController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: ResetPasswordRequest = req.body;
   const validation = await validator(ResetPasswordSchema, request);
+
   let feedback: Feedback;
   if (validation.isValid) {
     feedback = await resetPassword(request);

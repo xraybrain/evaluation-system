@@ -1,0 +1,43 @@
+<app-navbar [navTab]="'Quiz'"></app-navbar>
+<div class="container-lg">
+    <div class="row">
+        <div class="col-12 col-lg-7">
+            <ng-container *ngFor="let question of questions, first as isFirst">
+                <ng-container *ngIf="isFirst">
+                    <!-- Timer -->
+                    <div class="d-flex justify-content-end my-2">
+                        <app-timer [timeout]="question.timeout" (onTimerStopped)="onTimerStopped($event)"></app-timer>
+                    </div>
+                    <!-- Timer -->
+
+                    <div class="card card-rounded my-2">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <p>
+                                    {{question.question}}
+                                </p>
+                            </div>
+
+
+                            <ng-container *ngFor="let option of question.options; index as i;">
+                                <div class="form-check my-2">
+                                    <input class="form-check-input" type="radio" name="options" id="option-{{i}}"
+                                        [value]="option.option">
+                                    <label class="form-check-label" for="option-{{i}}">
+                                        {{option.option}}
+                                    </label>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="card-footer text-center px-5">
+                            <button class="btn btn-success rounded btn-block">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+        <div class="col-12 col-lg-5"></div>
+    </div>
+</div>

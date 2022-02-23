@@ -60,7 +60,7 @@ export class AdminFormComponent implements OnInit {
 
     this.toastr.info('Saving...', '', { disableTimeOut: true });
 
-    this.adminService.findAnduUpdate(request).subscribe((response) => {
+    this.adminService.findAndUpdate(request).subscribe((response) => {
       this.toastr.clear();
       if (response.success) {
         this.toastr.success('Saved!', '', { timeOut: 2000 });

@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { User } from 'src/app/models/interface/User.interface';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -10,7 +11,12 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   public user: User | undefined;
-  constructor(private readonly authService: AuthService) {}
+  @Input()
+  public navTab: string = 'Dashboard';
+  constructor(
+    private readonly authService: AuthService,
+    private readonly toastr: ToastrService
+  ) {}
 
   onLogout() {
     this.authService.logout();

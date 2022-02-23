@@ -36,6 +36,7 @@ export const refreshAccess = async (
       if (verifiedAccessToken.expired) {
         const decoded: any = decode(accessToken);
         if (decoded) {
+          console.log('Decoded Access Token:: ' + JSON.stringify(decoded));
           // Get refresh token
           const refreshToken = await getRefreshToken({
             id: decoded.token,
@@ -48,6 +49,7 @@ export const refreshAccess = async (
             const verifiedRefreshToken = verifyToken(refreshToken.token);
             //  When refresh token have not expired ... refresh access token
             if (!verifiedRefreshToken.expired) {
+              console.log('Refreshing Token...');
               const refreshedToken = await refreshAccessToken(
                 new RefreshAccessTokenRequest(
                   refreshToken.id,
@@ -59,9 +61,11 @@ export const refreshAccess = async (
               req.headers['authorization'] = refreshedToken;
               res.setHeader('x-refresh', refreshedToken);
             } else {
+              console.log('expired refresh token');
               await cancelAuth(refreshToken.id);
             }
           } else {
+            console.log('Invalid Access Token');
             await cancelAuth(decoded.token);
           }
         }

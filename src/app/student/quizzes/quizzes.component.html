@@ -1,0 +1,69 @@
+<div class="d-flex">
+    <app-sidebar class="sidebar" [userType]="'student'" [activeTab]="'quizzes'"></app-sidebar>
+    <div class="main-content">
+        <app-navbar [navTab]="'Quiz'"></app-navbar>
+        <div class="p-2">
+            <div class="container">
+                <div class="wrapper">
+                    <div class="row">
+                        <!-- Quizzes -->
+                        <ng-container *ngFor="let quiz of quizzes">
+                            <div class="col-12 col-lg-6 mx-auto">
+                                <div class="card card-rounded mb-2">
+                                    <div class="card-header pb-1">
+                                        <div class="d-flex flex-wrap font-weight-bold">
+                                            <h5 class="text-uppercase mr-2">
+                                                {{quiz.topic.course.code}}:
+                                            </h5>
+                                            <h5 class="text-capitalize">
+                                                {{quiz.topic.course.title}}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <h5 class="font-weight-bold">Topic</h5>
+                                            <p class="text-capitalize">{{quiz.topic.title}}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h5 class="text-underlined font-weight-bold">Quiz</h5>
+                                            <p class="text-capitalize">
+                                                {{quiz.title}}
+                                            </p>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <div class="d-flex">
+                                                <span class="mr-2 font-weight-bold">
+                                                    Lecturer:
+                                                </span>
+                                                <span class="text-capitalize">
+                                                    {{quiz.topic.course.teacher.user.surname}},
+                                                    {{quiz.topic.course.teacher.user.othernames}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-center pt-1">
+                                        <button class="btn btn-block btn-warning rounded" (click)="onWriteQuiz(quiz)">
+                                            <div class="d-flex justify-content-between">
+                                                <span>
+                                                    Write Quiz
+                                                </span>
+                                                <i class="fas fa-pen mr-2"></i>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!-- Quizzes -->
+                    </div>
+                </div>
+                <!-- Footer -->
+                <app-footer></app-footer>
+                <!-- Footer -->
+            </div>
+        </div>
+    </div>
+</div>

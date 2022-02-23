@@ -68,5 +68,21 @@
                 Course
             </a>
         </li>
+
+        <!-- Student -->
+        <li class="nav-item" *ngIf="userType=='student'">
+            <a routerLink="/{{userType}}/quizzes/" class="nav-link" [ngClass]="{'active': activeTab==='quizzes'}">
+                <i class="fas fa-pen mr-2"></i>
+                Quiz
+            </a>
+        </li>
+
+        <li class="nav-item" *ngIf="userType=='student'">
+            <a routerLink="/{{userType}}/results/" class="nav-link" [ngClass]="{'active': activeTab==='results'}">
+                <i class="fas fa-list-alt mr-2"></i>
+                Results
+            </a>
+        </li>
+        <!-- Student -->
     </ul>
 </nav>

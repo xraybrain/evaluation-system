@@ -94,6 +94,14 @@ export const changePassword = async (
         where: { id: userId },
       });
       feedback = new Feedback(true, 'success');
+      // Track Activity
+      await prisma.activity.create({
+        data: {
+          userId: userId,
+          content: `changed password`,
+          createdAt: new Date(),
+        },
+      });
     } else {
       feedback = new Feedback(false, 'Incorrect old password.');
     }

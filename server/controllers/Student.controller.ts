@@ -1,4 +1,6 @@
+import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { AppRequest } from 'server/models/App.model';
 import { Feedback } from 'server/models/Feedback.model';
 import {
   CreateStudentSchema,
@@ -14,18 +16,25 @@ import {
   createStudent,
   deleteStudent,
   getStudent,
+  getStudentQuizResult,
+  getStudentQuizzesResult,
   getStudents,
   updateStudent,
 } from 'server/services/Student.service';
 import { validator } from 'server/utils/yup.util';
 
-export const createStudentController = async (req: Request, res: Response) => {
+export const createStudentController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: CreateStudentRequest = req.body;
   const validation = await validator(CreateStudentSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
 
   if (validation.isValid) {
-    feedback = await createStudent(request);
+    feedback = await createStudent(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -51,12 +60,17 @@ export const getStudentsController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const updateStudentController = async (req: Request, res: Response) => {
+export const updateStudentController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: UpdateStudentRequest = req.body;
   const validation = await validator(UpdateStudentSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await updateStudent(request);
+    feedback = await updateStudent(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
@@ -64,15 +78,41 @@ export const updateStudentController = async (req: Request, res: Response) => {
   res.json(feedback);
 };
 
-export const deleteStudentController = async (req: Request, res: Response) => {
+export const deleteStudentController = async (
+  req: AppRequest,
+  res: Response
+) => {
   const request: DeleteStudentRequest = req.body;
   const validation = await validator(DeleteStudentSchema, request);
+  const user = req.user as User;
+
   let feedback: Feedback;
   if (validation.isValid) {
-    feedback = await deleteStudent(request);
+    feedback = await deleteStudent(request, user);
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
   }
+  res.json(feedback);
+};
+
+export const getStudentQuizResultController = async (
+  req: Request,
+  res: Response
+) => {
+  const { studentId, quizId } = req.params;
+  let feedback: Feedback = await getStudentQuizResult(
+    Number(studentId),
+    Number(quizId)
+  );
+  res.json(feedback);
+};
+
+export const getStudentQuizzesResultController = async (
+  req: Request,
+  res: Response
+) => {
+  const { studentId } = req.params;
+  const feedback = await getStudentQuizzesResult(Number(studentId));
   res.json(feedback);
 };

@@ -25,6 +25,24 @@ export interface Question {
   score: number;
   quizId: number;
   quiz: Quiz;
+  options: Option[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Option {
+  id: number;
+  option: string;
+  questionId: number;
+  isEditMode: boolean;
+}
+
+export interface UpdateOptionRequest {
+  id: number;
+  option?: string;
+}
+
+export interface CreateOptionRequest {
+  questionId: number;
+  option: string;
 }
