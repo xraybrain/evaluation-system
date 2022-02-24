@@ -58,7 +58,12 @@ export class TimerComponent implements OnInit {
       }
     }
 
-    this.seconds > 0 ? --this.seconds : this.onTimerStopped.emit(true); // emit event
+    if (this.seconds > 0) {
+      --this.seconds;
+    } else {
+      this.onTimerStopped.emit(true);
+      clearInterval(this.intervalID);
+    }
 
     this.padHours = this.padZero(this.hours);
     this.padMinutes = this.padZero(this.minutes);
@@ -69,7 +74,7 @@ export class TimerComponent implements OnInit {
     this.initTimer();
     this.setTimer();
     if (isPlatformBrowser(this.platformId)) {
-      setInterval(() => {
+      this.intervalID = setInterval(() => {
         this.setTimer();
       }, 1000);
     }

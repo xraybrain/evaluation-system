@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { QuizResult } from 'src/app/models/interface/Quiz.interface';
+import { Quiz, QuizResult } from 'src/app/models/interface/Quiz.interface';
 import { QuizService } from 'src/app/services/quiz.service';
 
 @Component({
@@ -11,13 +12,29 @@ import { QuizService } from 'src/app/services/quiz.service';
 export class QuizResultsComponent implements OnInit {
   @Input()
   quizId: number | undefined;
+  quiz: Quiz | undefined;
   quizResults: QuizResult[] = [];
+  intervalID: any;
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private readonly quizService: QuizService,
     private readonly toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.quizService.findOne({ id: this.quizId }).subscribe((response) => {
+      if (response.success && response.result) {
+        this.quiz = response.result;
+        if (this.quiz?.active) {
+          this.initQuizResultPoll();
+        }
+      }
+    });
+
+    this.loadQuizResults();
+  }
+
+  loadQuizResults() {
     this.quizService
       .findQuizResults(this.quizId as number)
       .subscribe((response) => {
@@ -27,5 +44,13 @@ export class QuizResultsComponent implements OnInit {
           this.toastr.error(response.message, '');
         }
       });
+  }
+
+  initQuizResultPoll() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.intervalID = setInterval(() => {
+        this.loadQuizResults();
+      }, 30000);
+    }
   }
 }

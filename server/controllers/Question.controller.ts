@@ -63,12 +63,12 @@ export const getQuestionsController = async (
   const { search, qid, paginate, time } = req.query;
   const page = Number(req.query['page']) || 1;
   const quizId = qid ? Number(qid) : 0;
-  const user = req.user;
+  const user: any = req.user;
 
   let feedback = await getQuestions(
     page,
     quizId,
-    user as User,
+    user,
     `${search}`,
     paginate === 'true',
     Number(time)

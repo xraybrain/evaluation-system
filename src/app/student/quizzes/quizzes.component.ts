@@ -60,7 +60,7 @@ export class QuizzesComponent implements OnInit {
       });
   }
 
-  onWriteQuiz(quiz: Quiz) {
+  onStartQuiz(quiz: Quiz) {
     const modalInstance = this.modal.open(QuizValidatorComponent, {
       size: 'sm',
       backdrop: 'static',

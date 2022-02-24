@@ -1,4 +1,4 @@
-import { Answer, PrismaClient, User } from '@prisma/client';
+import { Answer, PrismaClient, Question, Student, User } from '@prisma/client';
 import { UserType } from 'server/models/Enums';
 import { Feedback } from 'server/models/Feedback.model';
 import Pagination from 'server/models/Pagination.model';
@@ -60,7 +60,7 @@ export const getQuestion = async (id: number) => {
 export const getQuestions = async (
   page = 1,
   quizId: number,
-  user: User,
+  user: User & { student: Student },
   search?: string,
   paginate = true,
   time = 0
@@ -103,7 +103,23 @@ export const getQuestions = async (
       feedback.pages = pagination.totalPages;
     }
 
-    feedback.results = await prisma.question.findMany(query);
+    let questions: Question[] = [];
+    if (user.type === UserType.Student && time === 0) {
+      questions = await Promise.all(
+        (
+          await prisma.question.findMany(query)
+        ).filter(async (d) => {
+          const answer = await prisma.answer.findFirst({
+            where: { questionId: d.id, studentId: user.student.id },
+          });
+          return answer === null;
+        })
+      );
+      console.log(JSON.stringify(questions, null, 2));
+    } else {
+      questions = await prisma.question.findMany(query);
+    }
+    feedback.results = questions;
   } catch (error) {
     console.log(error);
     feedback = new Feedback(false, 'Operation failed');

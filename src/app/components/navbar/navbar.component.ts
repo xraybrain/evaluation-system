@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class NavbarComponent implements OnInit {
   public user: User | undefined;
   @Input()
-  public navTab: string = 'Dashboard';
+  public navTab: string | undefined = 'Dashboard';
   constructor(
     private readonly authService: AuthService,
     private readonly toastr: ToastrService

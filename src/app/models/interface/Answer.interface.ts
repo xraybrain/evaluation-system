@@ -4,7 +4,6 @@ import { Student } from './User.interface';
 export interface CreateAnswerRequest {
   answer: string;
   questionId: number;
-  studentId: number;
   quizId: number;
 }
 
