@@ -284,27 +284,6 @@ export const getStudentQuizzesResult = async (studentId: number) => {
   let feedback: Feedback;
   try {
     feedback = new Feedback(true, 'success');
-    const student = await prisma.student.findFirst({
-      where: { id: studentId },
-      include: {
-        user: {
-          select: {
-            surname: true,
-            othernames: true,
-            avatar: true,
-            email: true,
-            type: true,
-          },
-        },
-      },
-    });
-
-    const res = await prisma.answer.groupBy({
-      by: ['studentId', 'quizId'],
-      _sum: { score: true },
-      where: { studentId },
-    });
-
     const results = await Promise.all(
       (
         await prisma.answer.groupBy({
@@ -318,13 +297,15 @@ export const getStudentQuizzesResult = async (studentId: number) => {
           where: { quizId: d.quizId },
         });
 
-        const quiz = await prisma.quiz.findFirst({ where: { id: d.quizId } });
+        const quiz = await prisma.quiz.findFirst({
+          where: { id: d.quizId },
+          include: { topic: { include: { course: true } } },
+        });
 
         return {
           score: d._sum.score,
           totalScore: quizScore._sum.score,
           quiz,
-          student,
         };
       })
     );

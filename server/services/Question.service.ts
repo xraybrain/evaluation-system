@@ -103,18 +103,20 @@ export const getQuestions = async (
       feedback.pages = pagination.totalPages;
     }
 
-    let questions: Question[] = [];
+    let questions: any[] = [];
     if (user.type === UserType.Student && time === 0) {
-      questions = await Promise.all(
-        (
-          await prisma.question.findMany(query)
-        ).filter(async (d) => {
-          const answer = await prisma.answer.findFirst({
-            where: { questionId: d.id, studentId: user.student.id },
-          });
-          return answer === null;
-        })
-      );
+      questions = (
+        await Promise.all(
+          (
+            await prisma.question.findMany(query)
+          ).map(async (d) => {
+            const answer = await prisma.answer.findFirst({
+              where: { questionId: d.id, studentId: user.student.id },
+            });
+            return answer === null ? d : null;
+          })
+        )
+      ).filter((d) => d !== null);
       console.log(JSON.stringify(questions, null, 2));
     } else {
       questions = await prisma.question.findMany(query);

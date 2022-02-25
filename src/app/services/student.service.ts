@@ -35,4 +35,12 @@ export class StudentService {
       body: { id },
     });
   }
+
+  getStudentQuizzesResults(
+    studentId: number | undefined
+  ): Observable<Feedback> {
+    return this.http.get(`${this.API_URL}/quizzes/result/`, {
+      params: { studentId: studentId as number },
+    });
+  }
 }

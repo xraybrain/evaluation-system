@@ -14,6 +14,8 @@ export class QuizResultsComponent implements OnInit {
   quizId: number | undefined;
   quiz: Quiz | undefined;
   quizResults: QuizResult[] = [];
+  firstTimeLoadComplete = false;
+  loading = false;
   intervalID: any;
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -35,9 +37,12 @@ export class QuizResultsComponent implements OnInit {
   }
 
   loadQuizResults() {
+    this.loading = true;
     this.quizService
       .findQuizResults(this.quizId as number)
       .subscribe((response) => {
+        this.firstTimeLoadComplete = true;
+        this.loading = false;
         if (response.success) {
           if (response.results) this.quizResults = response.results;
         } else {
@@ -49,8 +54,13 @@ export class QuizResultsComponent implements OnInit {
   initQuizResultPoll() {
     if (isPlatformBrowser(this.platformId)) {
       this.intervalID = setInterval(() => {
+        this.firstTimeLoadComplete = false;
         this.loadQuizResults();
       }, 30000);
     }
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.intervalID);
   }
 }

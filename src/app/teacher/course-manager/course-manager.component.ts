@@ -28,6 +28,7 @@ export class CourseManagerComponent implements OnInit {
   public searchForm: FormGroup = new FormGroup({
     search: new FormControl('', [Validators.required]),
   });
+  public loading = false;
 
   constructor(
     private readonly courseService: CourseService,
@@ -51,6 +52,7 @@ export class CourseManagerComponent implements OnInit {
   }
 
   loadData(page = 1) {
+    this.loading = true;
     this.courseService
       .findAll(
         page,
@@ -59,6 +61,7 @@ export class CourseManagerComponent implements OnInit {
       )
       .subscribe((response) => {
         this.firstTimeLoadCompleted = true;
+        this.loading = false;
         if (response.success) {
           if (response.results) {
             this.courses.push(...response.results);

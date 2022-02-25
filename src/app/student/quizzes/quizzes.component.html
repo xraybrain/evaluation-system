@@ -5,6 +5,19 @@
         <div class="p-2">
             <div class="container">
                 <div class="wrapper">
+                    <!-- No Data -->
+                    <ng-container *ngIf="firstTimeLoadCompleted && quizzes.length === 0">
+                        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 mx-auto">
+                            <div class="alert alert-info rounded">
+                                <div class="text-center">
+                                    <i class="fas fa-ban fa-2x"></i>
+                                    <p class="mb-0 pt-3">No active quiz</p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- No Data -->
+
                     <div class="row">
                         <!-- Quizzes -->
                         <ng-container *ngFor="let quiz of quizzes">
@@ -47,6 +60,14 @@
                                         </button>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mx-auto" *ngIf="loading">
+                                <!-- Loading -->
+                                <div class="py-3 text-center">
+                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                    <p>Please wait...</p>
+                                </div>
+                                <!-- Loading -->
                             </div>
                         </ng-container>
                         <!-- Quizzes -->

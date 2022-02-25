@@ -35,7 +35,7 @@ export default class StudentRoute {
       getStudentQuizResultController
     );
     this.app.get(
-      '/api/student/quizzes/result/:studentId',
+      '/api/student/quizzes/result/',
       ensureAuthenticated,
       getStudentQuizzesResultController
     );

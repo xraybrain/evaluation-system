@@ -33,6 +33,8 @@ export class QuizReportComponent implements OnInit {
       backgroundColor: '#FF7360',
     },
   ];
+  public generatingReport = false;
+  public loadingResults = false;
 
   constructor(
     private readonly quizService: QuizService,
@@ -40,9 +42,12 @@ export class QuizReportComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.generatingReport = true;
+    this.loadingResults = true;
     this.quizService
       .generateQuizReport(this.quizId as number)
       .subscribe((response) => {
+        this.generatingReport = false;
         if (response.success) {
           if (response.result) {
             const report: QuizReport = response.result;
@@ -57,6 +62,7 @@ export class QuizReportComponent implements OnInit {
     this.quizService
       .findQuizResults(this.quizId as number)
       .subscribe((response) => {
+        this.loadingResults = false;
         if (response.success) {
           if (response.results) this.quizResults = response.results;
         } else {

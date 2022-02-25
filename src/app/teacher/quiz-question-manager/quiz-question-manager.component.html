@@ -52,10 +52,20 @@
                         <input type="search" placeholder="Search" class="form-control rounded" formControlName="search">
                     </form>
 
-                    <div class="my-1 ml-auto">
-                        <button class="btn btn-warning rounded" (click)="onCreateNew()">
+                    <div class="my-1 ml-auto" ngbDropdown>
+                        <button class="btn btn-warning rounded" ngbDropdownToggle>
                             New&nbsp;Question
                         </button>
+                        <div ngbDropdownMenu>
+                            <button ngbDropdownItem (click)="onCreateNew()">
+                                <i class="fas fa-plus"></i>
+                                Add
+                            </button>
+                            <button ngbDropdownItem (click)="onCreateNew()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Upload
+                            </button>
+                        </div>
                     </div>
                 </div>
 

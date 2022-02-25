@@ -21,6 +21,7 @@ export class QuizBoardComponent implements OnInit {
   questions: Question[] = [];
   lastUpdate = 0;
   selectedOption: Option | undefined;
+  intervalID: any;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -57,7 +58,7 @@ export class QuizBoardComponent implements OnInit {
 
     if (isPlatformBrowser(this.platformId)) {
       setInterval(() => {
-        this.loadQuestions();
+        this.intervalID = this.loadQuestions();
       }, 30000);
     }
   }
@@ -112,5 +113,9 @@ export class QuizBoardComponent implements OnInit {
         this.questions.splice(index, 1);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.intervalID);
   }
 }

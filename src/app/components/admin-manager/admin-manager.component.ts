@@ -26,6 +26,7 @@ export class AdminManagerComponent implements OnInit {
   public searchForm: FormGroup = new FormGroup({
     search: new FormControl('', [Validators.required]),
   });
+  public loading = false;
 
   constructor(
     private readonly adminService: AdminService,
@@ -43,10 +44,12 @@ export class AdminManagerComponent implements OnInit {
   }
 
   loadData(page = 1) {
+    this.loading = true;
     this.adminService
       .findAll(page, this.searchForm.controls['search'].value)
       .subscribe((response) => {
         this.firstTimeLoadCompleted = true;
+        this.loading = false;
         if (response.success) {
           if (response.results) {
             this.admins.push(...response.results);

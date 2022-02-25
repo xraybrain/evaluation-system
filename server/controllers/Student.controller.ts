@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Student, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { AppRequest } from 'server/models/App.model';
 import { Feedback } from 'server/models/Feedback.model';
@@ -109,10 +109,10 @@ export const getStudentQuizResultController = async (
 };
 
 export const getStudentQuizzesResultController = async (
-  req: Request,
+  req: AppRequest,
   res: Response
 ) => {
-  const { studentId } = req.params;
-  const feedback = await getStudentQuizzesResult(Number(studentId));
+  const user = req.user as User & { student: Student };
+  const feedback = await getStudentQuizzesResult(Number(user.student.id));
   res.json(feedback);
 };

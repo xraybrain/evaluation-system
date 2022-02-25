@@ -57,6 +57,13 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Loading -->
+                        <div class="py-3 text-center" *ngIf="loading">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            <p>Please wait...</p>
+                        </div>
+                        <!-- Loading -->
                     </div>
                     <div class="card-footer text-center" *ngIf="hasMore">
                         <button class="btn btn-outline-info" (click)="loadData(++currentPage)">

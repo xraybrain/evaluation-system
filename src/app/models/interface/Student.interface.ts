@@ -1,3 +1,5 @@
+import { Quiz } from './Quiz.interface';
+
 export interface CreateStudentRequest {
   surname: string;
   othernames: string;
@@ -20,4 +22,10 @@ export interface UpdateStudentRequest {
 
 export interface DeleteStudentRequest {
   id: number;
+}
+
+export interface StudentQuizResult {
+  score: number;
+  totalScore: number;
+  quiz: Quiz;
 }

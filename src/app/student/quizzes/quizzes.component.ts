@@ -21,6 +21,7 @@ export class QuizzesComponent implements OnInit {
   public searchForm: FormGroup = new FormGroup({
     search: new FormControl('', [Validators.required]),
   });
+  public loading = false;
 
   constructor(
     private readonly quizService: QuizService,
@@ -38,6 +39,7 @@ export class QuizzesComponent implements OnInit {
   }
 
   loadData(page = 1) {
+    this.loading = true;
     this.quizService
       .findAll(
         page,
@@ -46,7 +48,8 @@ export class QuizzesComponent implements OnInit {
         true
       )
       .subscribe((response) => {
-        this.firstTimeLoadCompleted = true;
+        this.loading = false;
+        if (!this.firstTimeLoadCompleted) this.firstTimeLoadCompleted = true;
         if (response.success) {
           if (response.results) {
             this.quizzes.push(...response.results);
