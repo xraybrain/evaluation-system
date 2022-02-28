@@ -17,7 +17,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderInterceptor } from './interceptor/HeaderInterceptor.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { NgChartsModule } from 'ng2-charts';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -61,11 +60,6 @@ import { StudentQuizzesResultComponent } from './components/student-quizzes-resu
 import { UploadQuestionComponent } from './modals/upload-question/upload-question.component';
 import { UploadPhotoComponent } from './modals/upload-photo/upload-photo.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-
-const config: SocketIoConfig = {
-  url: environment.socketUrl, // socket server url;
-  options: {},
-};
 
 @NgModule({
   declarations: [
@@ -127,7 +121,6 @@ const config: SocketIoConfig = {
     HttpClientModule,
     ToastrModule.forRoot({ timeOut: 2000 }),
     CookieModule.forRoot(),
-    SocketIoModule.forRoot(config),
     NgChartsModule,
   ],
   entryComponents: [
