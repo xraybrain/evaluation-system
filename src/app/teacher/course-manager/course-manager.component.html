@@ -4,14 +4,14 @@
         <app-navbar [navTab]="'Courses'"></app-navbar>
         <div class="p-2">
             <div class="container">
-                <div class="d-flex justify-content-between my-2">
-                    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                <div class="d-flex justify-content-between flex-wrap my-2">
+                    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="w-xs-100 order-1 order-sm-0">
                         <input type="search" placeholder="Search" class="form-control rounded" formControlName="search">
                     </form>
 
-                    <span>
+                    <span class="w-xs-100 order-0 order-sm-1 mb-2 text-right">
                         <button class="btn btn-warning rounded" (click)="onCreateNew()">
-                            New Course
+                            New&nbsp;Course
                         </button>
                     </span>
                 </div>
