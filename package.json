@@ -10,7 +10,8 @@
     "dev:ssr": "ng run evaluation-system-app:serve-ssr",
     "serve:ssr": "node dist/evaluation-system-app/server/main.js",
     "build:ssr": "ng build && ng run evaluation-system-app:server",
-    "prerender": "ng run evaluation-system-app:prerender"
+    "prerender": "ng run evaluation-system-app:prerender",
+    "postinstall": "ng build && ng run evaluation-system-app:server"
   },
   "private": true,
   "dependencies": {
