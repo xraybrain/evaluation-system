@@ -26,11 +26,11 @@ export class StudentService {
   }
 
   findAndUpdate(request: UpdateStudentRequest): Observable<Feedback> {
-    return this.http.put(`${this.API_URL}admin`, request);
+    return this.http.put(`${this.API_URL}`, request);
   }
 
   findAndDelete(id: number): Observable<Feedback> {
-    return this.http.delete(`${this.API_URL}admin`, {
+    return this.http.delete(`${this.API_URL}`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       body: { id },
     });

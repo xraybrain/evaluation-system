@@ -179,22 +179,30 @@ export const updateStudent = async (
       hash = bcrypt.hashSync(request.password, salt);
     }
 
-    await prisma.student.update({
+    request.levelId = request.levelId
+      ? Number(request.levelId)
+      : request.levelId;
+    request.deptId = request.deptId ? Number(request.deptId) : request.deptId;
+    const student = await prisma.student.findFirst({
+      where: { id: request.id },
+    });
+
+    await prisma.user.update({
       data: {
-        regNo: request.regNo,
-        levelId: request.levelId,
-        deptId: request.deptId,
-        user: {
+        surname: request.surname,
+        othernames: request.othernames,
+        password: hash,
+        student: {
           update: {
-            surname: request.surname,
-            othernames: request.othernames,
-            email: request.email,
-            password: hash,
+            regNo: request.regNo,
+            levelId: request.levelId,
+            deptId: request.deptId,
           },
         },
       },
-      where: { id: Number(request.id) },
+      where: { id: student?.userId },
     });
+    
     feedback = new Feedback(true, 'success');
     // Track Activity
     await prisma.activity.create({

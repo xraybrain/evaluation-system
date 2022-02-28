@@ -26,7 +26,7 @@ export class AuthService {
   ) {}
 
   login(request: LoginRequest): Observable<Feedback> {
-    return this.http.post(`${this.API_URL}/login`, request);
+    return this.http.post(`${this.API_URL}login`, request);
   }
 
   logout() {
@@ -39,7 +39,7 @@ export class AuthService {
   }
 
   currentUser(): Observable<Feedback> {
-    return this.http.get(`${this.API_URL}/current/user`);
+    return this.http.get(`${this.API_URL}current/user`);
   }
 
   get isLoggedIn() {

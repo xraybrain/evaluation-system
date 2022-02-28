@@ -33,6 +33,7 @@ export class ForgotPasswordComponent implements OnInit {
     };
     this.appService.resetPassword(request).subscribe((response) => {
       this.toastr.clear();
+      this.processing = false;
       if (response.success) {
         this.toastr.success('Done!', '', { timeOut: 3000 });
         this.showPassword(response.result);

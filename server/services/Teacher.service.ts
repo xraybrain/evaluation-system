@@ -161,20 +161,34 @@ export const updateTeacher = async (
       hash = bcrypt.hashSync(request.password, salt);
     }
 
-    await prisma.teacher.update({
+    request.deptId = request.deptId ? Number(request.deptId) : request.deptId;
+    const teacher = await prisma.teacher.findFirst({
+      where: { id: request.id },
+    });
+
+    await prisma.user.update({
       data: {
-        deptId: request.deptId,
-        user: {
+        surname: request.surname,
+        othernames: request.othernames,
+        password: hash,
+        teacher: {
           update: {
-            surname: request.surname,
-            othernames: request.othernames,
-            email: request.email,
-            password: hash,
+            deptId: request.deptId,
           },
         },
       },
-      where: { id: Number(request.id) },
+      where: { id: teacher?.userId },
     });
+
+    // await prisma.teacher.update({
+    //   data: {
+    //     deptId: request.deptId,
+    //     user: {
+    //       update: {},
+    //     },
+    //   },
+    //   where: { id: Number(request.id) },
+    // });
     feedback = new Feedback(true, 'success');
     // Track Activity
     await prisma.activity.create({
