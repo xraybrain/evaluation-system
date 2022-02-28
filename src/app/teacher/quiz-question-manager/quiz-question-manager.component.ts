@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MessageBoxComponent } from 'src/app/modals/message-box/message-box.component';
 import { QuestionFormComponent } from 'src/app/modals/question-form/question-form.component';
 import { QuestionOptionsComponent } from 'src/app/modals/question-options/question-options.component';
+import { UploadQuestionComponent } from 'src/app/modals/upload-question/upload-question.component';
 import { Question } from 'src/app/models/interface/Question.interface';
 import { Quiz } from 'src/app/models/interface/Quiz.interface';
 import {
@@ -83,6 +84,24 @@ export class QuizQuestionManagerComponent implements OnInit {
       .then((question?: Question) => {
         if (question) {
           this.questions.push(question);
+        }
+      })
+      .catch(() => {});
+  }
+
+  onUpload() {
+    const modalInstance = this.modal.open(UploadQuestionComponent, {
+      size: 'xl',
+      windowClass: 'modal-rounded',
+      backdrop: 'static',
+      scrollable: true,
+    });
+    modalInstance.componentInstance.quizId = this.quizId;
+    modalInstance.result
+      .then((uploaded) => {
+        if (uploaded) {
+          this.questions = [];
+          this.loadData(1);
         }
       })
       .catch(() => {});

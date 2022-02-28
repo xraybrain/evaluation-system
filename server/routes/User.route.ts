@@ -3,8 +3,12 @@ import {
   deleteUserActivityController,
   getUserActivitiesController,
   updateUserController,
+  uploadAvatarController,
 } from 'server/controllers/User.controller';
 import { ensureAuthenticated } from 'server/middlewares/auth.middleware';
+import * as multer from 'multer';
+import { getMulterStorage } from 'server/utils/multer.util';
+const uploadAvatar = multer({ storage: getMulterStorage() });
 
 export default class UserRoute {
   constructor(private app: Application) {
@@ -22,6 +26,12 @@ export default class UserRoute {
       '/api/user/activity',
       ensureAuthenticated,
       deleteUserActivityController
+    );
+    this.app.post(
+      '/api/user/upload',
+      ensureAuthenticated,
+      uploadAvatar.single('avatar'),
+      uploadAvatarController
     );
   }
 }

@@ -18,6 +18,7 @@ export class DepartmentFormComponent implements OnInit {
   @Input()
   department: Department | undefined;
   formData: FormGroup = new FormGroup({});
+  processing = false;
 
   constructor(
     private readonly departmentService: DepartmentService,
@@ -34,10 +35,13 @@ export class DepartmentFormComponent implements OnInit {
   }
 
   create() {
+    if (this.processing) return;
     const request: CreateDepartmentRequest = {
       name: this.fd['name'].value,
     };
+    this.processing = true;
     this.departmentService.create(request).subscribe((response) => {
+      this.processing = false;
       if (response.success) {
         this.toastr.success('Added', '', { timeOut: 2000 });
         this.activeModal.close(response.result);

@@ -21,6 +21,7 @@ export class TeacherFormComponent implements OnInit {
   teacher: Teacher | undefined;
   formData: FormGroup = new FormGroup({});
   departments: Department[] = [];
+  processing = false;
 
   constructor(
     private readonly teacherService: TeacherService,
@@ -38,6 +39,7 @@ export class TeacherFormComponent implements OnInit {
   }
 
   create() {
+    if (this.processing) return;
     const request: CreateTeacherRequest = {
       surname: this.fd['surname'].value,
       othernames: this.fd['othernames'].value,
@@ -45,7 +47,9 @@ export class TeacherFormComponent implements OnInit {
       password: this.fd['password'].value,
       deptId: this.fd['deptId'].value,
     };
+    this.processing = true;
     this.teacherService.create(request).subscribe((response) => {
+      this.processing = false;
       if (response.success) {
         this.toastr.success('Added', '', { timeOut: 2000 });
         this.activeModal.close(response.result);

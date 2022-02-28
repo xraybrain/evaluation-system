@@ -52,7 +52,11 @@ export const updateUser = async (request: UpdateUserRequest) => {
   let feedback: Feedback;
   try {
     await prisma.user.update({
-      data: { surname: request.surname, othernames: request.othernames },
+      data: {
+        surname: request.surname,
+        othernames: request.othernames,
+        avatar: request.avatar,
+      },
       where: { id: request.id },
     });
     feedback = new Feedback(true, 'success');

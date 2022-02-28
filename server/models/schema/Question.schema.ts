@@ -35,3 +35,8 @@ export const UpdateQuestionOptionSchema = object().shape({
 export const DeleteQuestionOptionSchema = object().shape({
   id: number().integer('Invalid id').required('Id is required'),
 });
+
+export const UploadQuestionSchema = object().shape({
+  quizId: number().required('Quiz is required'),
+  filename: string().required('`upload` field is required'),
+});

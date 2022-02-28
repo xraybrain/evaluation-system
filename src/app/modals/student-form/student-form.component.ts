@@ -23,6 +23,7 @@ export class StudentFormComponent implements OnInit {
   formData: FormGroup = new FormGroup({});
   departments: Department[] = [];
   levels: Level[] = [];
+  processing = false;
 
   constructor(
     private readonly studentService: StudentService,
@@ -41,6 +42,8 @@ export class StudentFormComponent implements OnInit {
   }
 
   create() {
+    if (this.processing) return;
+    this.processing = true;
     const request: CreateStudentRequest = {
       surname: this.fd['surname'].value,
       othernames: this.fd['othernames'].value,
@@ -51,6 +54,7 @@ export class StudentFormComponent implements OnInit {
       levelId: this.fd['levelId'].value,
     };
     this.studentService.create(request).subscribe((response) => {
+      this.toastr.clear();
       if (response.success) {
         this.toastr.success('Added', '', { timeOut: 2000 });
         this.activeModal.close(response.result);

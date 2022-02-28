@@ -68,4 +68,8 @@ export class QuestionService {
       body: { id },
     });
   }
+
+  uploadQuestions(formdata: FormData): Observable<Feedback> {
+    return this.http.post(`${this.API_URL}questions/upload/`, formdata);
+  }
 }

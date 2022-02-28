@@ -1,12 +1,18 @@
 <div class="wrapper">
     <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 mx-auto login-pane">
+        <div class="text-center logo">
+            <span>
+                <i class="fas fa-infinity mr-1 text-warning"></i>
+            </span>
+            <span>Evaluator</span>
+        </div>
         <div class="card card-rounded static-align-center">
-            <div class="card-header">
-                <h5 class="card-title">
+            <div class="card-header pb-1">
+                <h5 class="card-title mb-0">
                     Log In
                 </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body py-2">
                 <form [formGroup]="formData" (ngSubmit)="login()">
                     <div class="form-group">
                         <input type="email" class="form-control rounded shadow-none" formControlName="email"
@@ -35,6 +41,11 @@
                                 <i class="fas fa-spinner fa-spin"></i>
                             </span>
                         </button>
+                    </div>
+                    <div class="form-group text-center">
+                        <a class="small" routerLink="/forgot/password">
+                            Forgot your password?
+                        </a>
                     </div>
                 </form>
             </div>

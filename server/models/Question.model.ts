@@ -35,3 +35,20 @@ export class UpdateQuestionOptionRequest {
 export class DeleteQuestionOptionRequest {
   constructor(public id: number) {}
 }
+
+export class ProcessQuestionUploadRequest {
+  constructor(public quizId: number, public filename: string) {}
+}
+
+export class UploadQuestionRequest {
+  constructor(
+    public Score: number,
+    public Timeout: number,
+    public Question: string,
+    public Answer: string,
+    public OptionA?: string,
+    public OptionB?: string,
+    public OptionC?: string,
+    public OptionD?: string
+  ) {}
+}

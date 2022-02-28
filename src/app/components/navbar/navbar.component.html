@@ -1,5 +1,10 @@
 <nav class="navbar navbar-light bg-light" aria-expanded="false">
-    <a class="navbar-brand text-capitalize">{{navTab}}</a>
+    <div class="d-flex align-items-center">
+        <button class="btn mr-2 d-sm-none" (click)="onToggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a class="navbar-brand text-capitalize">{{navTab}}</a>
+    </div>
 
     <div>
         <ul class="navbar-nav mr-auto flex-row align-items-center">

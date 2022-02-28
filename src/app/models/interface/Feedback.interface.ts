@@ -6,4 +6,5 @@ export default interface Feedback {
   page?: number;
   pages?: number;
   redirect?: string;
+  errors?: string[];
 }

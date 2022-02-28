@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import Feedback from '../models/interface/Feedback.interface';
@@ -18,5 +18,16 @@ export class UserService {
 
   findAndUpdate(request: UpdateUserRequest): Observable<Feedback> {
     return this.http.put(`${this.API_URL}user/`, request);
+  }
+
+  findAndDeleteActivity(id: number): Observable<Feedback> {
+    return this.http.delete(`${this.API_URL}user/activity`, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body: { id },
+    });
+  }
+
+  uploadAvatar(formdata: FormData): Observable<Feedback> {
+    return this.http.post(`${this.API_URL}user/upload`, formdata);
   }
 }

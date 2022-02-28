@@ -7,3 +7,10 @@ export class Feedback {
   redirect?: string;
   constructor(public success: boolean, public message: string) {}
 }
+
+export class UploadFeedback {
+  fields: any;
+  urls: string[] = [];
+  message = '';
+  constructor(public success: boolean) {}
+}

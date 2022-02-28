@@ -50,9 +50,13 @@
         </div>
         <div class="form-group mt-2">
             <ng-container *ngIf="!student">
-                <button class="btn btn-block btn-success rounded" (click)="create()" [disabled]="formData.invalid">
+                <button class="btn btn-block btn-success rounded" (click)="create()"
+                    [disabled]="formData.invalid || processing">
                     <i class="fas fa-plus mr-1"></i>
                     Create
+                    <span *ngIf="processing">
+                        <i class="fas fa-spinner fa-spin ml-1"></i>
+                    </span>
                 </button>
             </ng-container>
             <ng-container *ngIf="student">

@@ -1,7 +1,7 @@
 <div class="d-flex">
     <app-sidebar class="sidebar" [userType]="'teacher'" [activeTab]="'course'"></app-sidebar>
     <div class="main-content">
-        <app-navbar></app-navbar>
+        <app-navbar [navTab]="'Courses'"></app-navbar>
         <div class="p-2">
             <div class="container">
                 <div class="d-flex justify-content-between my-2">
@@ -41,14 +41,14 @@
                                             </td>
                                             <td>
                                                 <a routerLink="/teacher/manage/course/topics/{{course.id}}"
-                                                    class="btn btn-info btn-block">
+                                                    class="btn btn-info btn-block btn-sm">
                                                     Topics
                                                 </a>
                                             </td>
                                             <td>{{course.createdAt | date}}</td>
                                             <td>
                                                 <div ngbDropdown placement="bottom">
-                                                    <button ngbDropdownToggle class="btn btn-info">
+                                                    <button ngbDropdownToggle class="btn btn-info btn-sm">
                                                         More
                                                     </button>
                                                     <div ngbDropdownMenu>

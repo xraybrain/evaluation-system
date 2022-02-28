@@ -22,6 +22,7 @@ export class QuizBoardComponent implements OnInit {
   lastUpdate = 0;
   selectedOption: Option | undefined;
   intervalID: any;
+  isSubmitting = false;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -39,12 +40,8 @@ export class QuizBoardComponent implements OnInit {
       const decoded = jwt_decode<{ quiz: number }>(token);
       if (decoded && decoded.quiz) {
         this.quizId = decoded.quiz;
-        this.quizService.findOne({ id: this.quizId }).subscribe((response) => {
-          if (response.success) {
-            this.quiz = response.result;
-          }
-          this.loadQuestions();
-        });
+        this.loadQuiz();
+        this.loadQuestions();
       } else {
         this.toastr.error('Invalid token');
         this.router.navigate(['/student/quizzes']);
@@ -57,10 +54,22 @@ export class QuizBoardComponent implements OnInit {
     }
 
     if (isPlatformBrowser(this.platformId)) {
-      setInterval(() => {
-        this.intervalID = this.loadQuestions();
+      this.intervalID = setInterval(() => {
+        this.loadQuestions();
+        this.loadQuiz();
       }, 30000);
     }
+  }
+
+  loadQuiz() {
+    this.quizService.findOne({ id: this.quizId }).subscribe((response) => {
+      if (response.success) {
+        this.quiz = response.result;
+        if (!this.quiz?.active && this.intervalID) {
+          clearInterval(this.intervalID);
+        }
+      }
+    });
   }
 
   loadQuestions() {
@@ -92,6 +101,8 @@ export class QuizBoardComponent implements OnInit {
   }
 
   submit(question: Question) {
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
     const request: CreateAnswerRequest = {
       answer: `${
         this.selectedOption?.option ? this.selectedOption?.option : ''
@@ -104,13 +115,15 @@ export class QuizBoardComponent implements OnInit {
 
     this.answerService.submitAnswer(request).subscribe((response) => {
       this.toastr.clear();
-      if (!response.success) {
-        this.toastr.error(response.message);
-      }
-      // Next Question
-      const index = this.questions.findIndex((d) => d.id === question.id);
-      if (index !== -1) {
-        this.questions.splice(index, 1);
+      this.isSubmitting = false;
+      if (response.success) {
+        // Next Question
+        const index = this.questions.findIndex((d) => d.id === question.id);
+        if (index !== -1) {
+          this.questions.splice(index, 1);
+        }
+      } else {
+        this.toastr.warning(response.message, '', { timeOut: 5000 });
       }
     });
   }

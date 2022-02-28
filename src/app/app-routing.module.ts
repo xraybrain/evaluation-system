@@ -9,6 +9,7 @@ import { DepartmentComponent } from './admin/department/department.component';
 import { AdminManagerComponent } from './components/admin-manager/admin-manager.component';
 import { StudentManagerComponent } from './components/student-manager/student-manager.component';
 import { TeacherManagerComponent } from './components/teacher-manager/teacher-manager.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
 import { QuizBoardComponent } from './student/quiz-board/quiz-board.component';
 import { QuizzesComponent } from './student/quizzes/quizzes.component';
@@ -27,6 +28,7 @@ import { TopicManagerComponent } from './teacher/topic-manager/topic-manager.com
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot/password', component: ForgotPasswordComponent },
 
   /** Admin Route */
   {

@@ -3,6 +3,7 @@ export enum MessageBoxType {
   Success,
   Warning,
   Error,
+  Html,
 }
 
 export enum MessageBoxButton {

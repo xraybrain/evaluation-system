@@ -41,7 +41,7 @@ export const createQuiz = async (request: CreateQuizRequest, user: User) => {
       await prisma.activity.create({
         data: {
           userId: user.id,
-          content: `created quiz (${newQuiz.id}) record'`,
+          content: `created quiz '${newQuiz.title}' record`,
           createdAt: new Date(),
         },
       });
@@ -134,7 +134,7 @@ export const updateQuiz = async (request: UpdateQuizRequest, user: User) => {
     await prisma.activity.create({
       data: {
         userId: user.id,
-        content: `updated quiz (${request.id}) record'`,
+        content: `updated quiz (${request.id}) record`,
         createdAt: new Date(),
       },
     });

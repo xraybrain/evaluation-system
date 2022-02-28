@@ -4,11 +4,12 @@
         <app-navbar [navTab]="'Quiz'"></app-navbar>
         <div class="p-2">
             <div class="container">
-                <div class="wrapper">
+                <div class="wrapper"
+                    [ngClass]="{'d-flex align-items-center justify-content-center': firstTimeLoadCompleted && quizzes.length === 0 }">
                     <!-- No Data -->
                     <ng-container *ngIf="firstTimeLoadCompleted && quizzes.length === 0">
                         <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 mx-auto">
-                            <div class="alert alert-info rounded">
+                            <div class="alert alert-light rounded">
                                 <div class="text-center">
                                     <i class="fas fa-ban fa-2x"></i>
                                     <p class="mb-0 pt-3">No active quiz</p>
@@ -17,6 +18,7 @@
                         </div>
                     </ng-container>
                     <!-- No Data -->
+
 
                     <div class="row">
                         <!-- Quizzes -->
@@ -61,16 +63,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 mx-auto" *ngIf="loading">
-                                <!-- Loading -->
-                                <div class="py-3 text-center">
-                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                                    <p>Please wait...</p>
-                                </div>
-                                <!-- Loading -->
-                            </div>
                         </ng-container>
                         <!-- Quizzes -->
+                        <!--Loading -->
+                        <div class="col-12 col-lg-6 mx-auto align-self-center" *ngIf="loading">
+                            <div class="text-center">
+                                <span>
+                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                </span>
+                                <p class="py-2">Loading...</p>
+                            </div>
+                        </div>
+                        <!-- Loading -->
                     </div>
                 </div>
                 <!-- Footer -->

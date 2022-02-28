@@ -53,7 +53,7 @@ export const createAdmin = async (request: CreateAdminRequest, user: User) => {
       await prisma.activity.create({
         data: {
           userId: user.id,
-          content: `created a new admin '${newAdmin?.user.surname} {newAdmin?.user.othernames}'`,
+          content: `created a new admin '${newAdmin?.user.surname} ${newAdmin?.user.othernames}'`,
           createdAt: new Date(),
         },
       });

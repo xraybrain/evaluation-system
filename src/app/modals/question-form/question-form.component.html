@@ -69,13 +69,14 @@
 
         <div class="form-group mt-2">
             <ng-container *ngIf="!question">
-                <button class="btn btn-block btn-success rounded" (click)="create()" [disabled]="formData.invalid">
+                <button class="btn btn-block btn-success rounded" (click)="create()"
+                    [disabled]="formData.invalid || processing">
                     <i class="fas fa-plus mr-1"></i>
                     Add
                 </button>
             </ng-container>
             <ng-container *ngIf="question">
-                <button class="btn btn-block btn-success rounded" (click)="update()">
+                <button class="btn btn-block btn-success rounded" (click)="update()" [disabled]="processing">
                     Save Changes
                     <i class="fas fa-check-circle ml-1"></i>
                 </button>

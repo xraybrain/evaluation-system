@@ -7,9 +7,12 @@ import {
   CreateQuestionRequest,
   DeleteQuestionOptionRequest,
   DeleteQuestionRequest,
+  ProcessQuestionUploadRequest,
   UpdateQuestionOptionRequest,
   UpdateQuestionRequest,
+  UploadQuestionRequest,
 } from 'server/models/Question.model';
+import { xlsxReader } from 'server/utils/xlsx.util';
 
 const prisma = new PrismaClient();
 
@@ -238,5 +241,64 @@ export const deleteQuestionOption = async (
   } catch (error) {
     feedback = new Feedback(false, 'Operation failed');
   }
+  return feedback;
+};
+
+export const processQuestionUpload = async (
+  request: ProcessQuestionUploadRequest
+) => {
+  const rawData: UploadQuestionRequest[] = xlsxReader(request.filename)[
+    'Sheet1'
+  ];
+  const feedback = new Feedback(true, 'success');
+  feedback.errors = [];
+  await Promise.all(
+    rawData.map(async (d) => {
+      try {
+        const alreadyExists = await prisma.question.findFirst({
+          where: { quizId: Number(request.quizId), question: d.Question },
+        });
+
+        if (alreadyExists) {
+          feedback.success = false;
+          feedback.message = `Some questions where not inserted.`;
+          feedback.errors?.push(
+            `Failed to add "${d.Question}" because it already exists.`
+          );
+        } else {
+          const options: { option: string }[] = [];
+          d.OptionA !== undefined
+            ? options.push({ option: `${d.OptionA}` })
+            : null;
+          d.OptionB !== undefined
+            ? options.push({ option: `${d.OptionB}` })
+            : null;
+          d.OptionC !== undefined
+            ? options.push({ option: `${d.OptionC}` })
+            : null;
+          d.OptionD !== undefined
+            ? options.push({ option: `${d.OptionD}` })
+            : null;
+
+          await prisma.question.create({
+            data: {
+              question: d.Question,
+              answer: `${d.Answer}`,
+              score: d.Score,
+              timeout: d.Timeout,
+              options: { createMany: { data: options } },
+              quizId: Number(request.quizId),
+              createdAt: new Date(),
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        feedback.success = false;
+        feedback.message = 'Operation failed';
+        feedback.errors?.push(`Failed to add "${d.Question}".`);
+      }
+    })
+  );
   return feedback;
 };

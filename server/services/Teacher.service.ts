@@ -66,7 +66,7 @@ export const createTeacher = async (
       await prisma.activity.create({
         data: {
           userId: user.id,
-          content: `Added new teacher '${newTeacher?.user.surname} ${newTeacher?.user.surname}' record'`,
+          content: `Added new teacher '${newTeacher?.user.surname} ${newTeacher?.user.othernames}' record`,
           createdAt: new Date(),
         },
       });

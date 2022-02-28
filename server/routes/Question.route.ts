@@ -8,8 +8,32 @@ import {
   getQuestionsController,
   updateQuestionController,
   updateQuestionOptionController,
+  uploadQuestionController,
 } from 'server/controllers/Question.controller';
 import { ensureAuthenticated } from 'server/middlewares/auth.middleware';
+import * as multer from 'multer';
+import * as path from 'path';
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../../../public/questions/'));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const questionUploader = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype !==
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ) {
+      return cb(new Error('File type not accepted'));
+    }
+    cb(null, true);
+  },
+});
 
 export default class QuestionRoute {
   constructor(private app: Application) {
@@ -56,6 +80,11 @@ export default class QuestionRoute {
       '/api/question/option/',
       ensureAuthenticated,
       deleteQuestionOptionController
+    );
+    this.app.post(
+      '/api/questions/upload/',
+      questionUploader.single('upload'),
+      uploadQuestionController
     );
   }
 }

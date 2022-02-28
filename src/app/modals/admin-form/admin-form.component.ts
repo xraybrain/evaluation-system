@@ -18,6 +18,7 @@ export class AdminFormComponent implements OnInit {
   @Input()
   admin: Admin | undefined;
   formData: FormGroup = new FormGroup({});
+  processing = false;
 
   constructor(
     private readonly adminService: AdminService,
@@ -34,13 +35,17 @@ export class AdminFormComponent implements OnInit {
   }
 
   create() {
+    if (this.processing) return;
+    this.processing = true;
     const request: CreateAdminRequest = {
       surname: this.fd['surname'].value,
       othernames: this.fd['othernames'].value,
       email: this.fd['email'].value,
       password: this.fd['password'].value,
     };
+
     this.adminService.create(request).subscribe((response) => {
+      this.processing = false;
       if (response.success) {
         this.toastr.success('Added', '', { timeOut: 2000 });
         this.activeModal.close(response.result);

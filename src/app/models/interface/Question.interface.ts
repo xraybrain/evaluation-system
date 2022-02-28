@@ -46,3 +46,14 @@ export interface CreateOptionRequest {
   questionId: number;
   option: string;
 }
+
+export interface QuestionUploadTemplate {
+  Score: number;
+  Timeout: number;
+  Question: string;
+  Answer: string;
+  OptionA?: string;
+  OptionB?: string;
+  OptionC?: string;
+  OptionD?: string;
+}

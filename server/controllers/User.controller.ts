@@ -6,6 +6,7 @@ import { UpdateUserSchema } from 'server/models/schema/User.schema';
 import {
   DeleteUserActivityRequest,
   UpdateUserRequest,
+  UploadAvatarRequest,
 } from 'server/models/User.model';
 import {
   deleteUserActivity,
@@ -50,4 +51,20 @@ export const deleteUserActivityController = async (
   const request: DeleteUserActivityRequest = req.body;
   const feedback = await deleteUserActivity(request);
   res.json(feedback);
+};
+
+export const uploadAvatarController = async (
+  req: AppRequest,
+  res: Response
+) => {
+  const user = req.user as User;
+  const request = new UploadAvatarRequest(
+    req.file?.filename as string,
+    user.id
+  );
+  const feedback = await updateUser({ id: user.id, avatar: request.filepath });
+  if (feedback.success) {
+    feedback.result = request.filepath;
+  }
+  return res.json(feedback);
 };

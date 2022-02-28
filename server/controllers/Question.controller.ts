@@ -7,6 +7,7 @@ import {
   CreateQuestionRequest,
   DeleteQuestionOptionRequest,
   DeleteQuestionRequest,
+  ProcessQuestionUploadRequest,
   UpdateQuestionOptionRequest,
   UpdateQuestionRequest,
 } from 'server/models/Question.model';
@@ -18,6 +19,7 @@ import {
   DeleteQuestionSchema,
   UpdateQuestionOptionSchema,
   UpdateQuestionSchema,
+  UploadQuestionSchema,
 } from 'server/models/schema/Question.schema';
 import {
   createQuestion,
@@ -26,6 +28,7 @@ import {
   deleteQuestionOption,
   getQuestion,
   getQuestions,
+  processQuestionUpload,
   updateQuestion,
   updateQuestionOption,
 } from 'server/services/Question.service';
@@ -150,6 +153,21 @@ export const deleteQuestionOptionController = async (
   } else {
     feedback = new Feedback(false, validation.errors.join(','));
     feedback.errors = validation.errors;
+  }
+  res.json(feedback);
+};
+
+export const uploadQuestionController = async (req: Request, res: Response) => {
+  const request = new ProcessQuestionUploadRequest(
+    req.body.quizId,
+    req.file?.path as string
+  );
+  const validation = await validator(UploadQuestionSchema, request);
+  let feedback: Feedback;
+  if (validation.isValid) {
+    feedback = await processQuestionUpload(request);
+  } else {
+    feedback = new Feedback(false, validation.errors.join(','));
   }
   res.json(feedback);
 };

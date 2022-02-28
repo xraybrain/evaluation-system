@@ -58,6 +58,9 @@ import { QuizBoardComponent } from './student/quiz-board/quiz-board.component';
 import { QuizValidatorComponent } from './modals/quiz-validator/quiz-validator.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { StudentQuizzesResultComponent } from './components/student-quizzes-result/student-quizzes-result.component';
+import { UploadQuestionComponent } from './modals/upload-question/upload-question.component';
+import { UploadPhotoComponent } from './modals/upload-photo/upload-photo.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 const config: SocketIoConfig = {
   url: environment.socketUrl, // socket server url;
@@ -111,6 +114,9 @@ const config: SocketIoConfig = {
     QuizValidatorComponent,
     TimerComponent,
     StudentQuizzesResultComponent,
+    UploadQuestionComponent,
+    UploadPhotoComponent,
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

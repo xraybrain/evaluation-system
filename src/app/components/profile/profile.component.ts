@@ -109,4 +109,20 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
+  uploadAvatar(event: any) {
+    const file = event?.target.files[0];
+    const formdata = new FormData();
+    formdata.append('avatar', file);
+    this.toastr.info('Please wait...', '', { disableTimeOut: true });
+    this.userService.uploadAvatar(formdata).subscribe((response) => {
+      this.toastr.clear();
+      if (response.success) {
+        this.toastr.success('Uploaded!');
+        if (this.user) this.user.avatar = `${response.result}`;
+      } else {
+        this.toastr.error(response.message);
+      }
+    });
+  }
 }

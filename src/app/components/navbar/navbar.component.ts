@@ -27,4 +27,17 @@ export class NavbarComponent implements OnInit {
       this.user = response.result;
     });
   }
+
+  onToggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+    console.log(sidebar?.classList.contains('open'));
+    if (sidebar?.classList.contains('open')) {
+      sidebar?.classList.remove('open');
+      overlay?.classList.remove('open');
+    } else {
+      sidebar?.classList.add('open');
+      overlay?.classList.add('open');
+    }
+  }
 }

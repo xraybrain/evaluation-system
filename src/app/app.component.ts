@@ -1,4 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  ViewChild,
+} from '@angular/core';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -7,6 +16,7 @@ import {
   Router,
 } from '@angular/router';
 import { filter, map, Observable, of } from 'rxjs';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SeoService } from './services/seo.service';
 
 @Component({
@@ -14,22 +24,34 @@ import { SeoService } from './services/seo.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
-  loading$: Observable<boolean> = of(false);
-  constructor(private readonly seo: SeoService, private router: Router) {
+export class AppComponent implements AfterViewInit {
+  constructor(
+    private readonly seo: SeoService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private readonly platformId: Object
+  ) {
     this.seo.setDefaults();
   }
 
-  ngOnInit(): void {
-    this.loading$ = this.router.events.pipe(
-      filter(
-        (e) =>
-          e instanceof NavigationStart ||
-          e instanceof NavigationEnd ||
-          e instanceof NavigationCancel ||
-          e instanceof NavigationError
-      ),
-      map((e) => e instanceof NavigationStart)
-    );
+  ngAfterViewInit(): void {
+    this.router.events.subscribe(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        const overlay = document.querySelector('.overlay');
+        overlay?.classList.remove('open');
+      }
+    });
+  }
+
+  onToggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+    console.log(sidebar?.classList.contains('open'));
+    if (sidebar?.classList.contains('open')) {
+      sidebar?.classList.remove('open');
+      overlay?.classList.remove('open');
+    } else {
+      sidebar?.classList.add('open');
+      overlay?.classList.add('open');
+    }
   }
 }

@@ -8,10 +8,18 @@ const prisma = new PrismaClient();
 export const createAnswer = async (request: CreateAnswerRequest) => {
   let feedback: Feedback;
   try {
+    const quizStopped = await prisma.quiz.findFirst({
+      where: { id: request.quizId, active: false },
+    });
     const alreadyAnswered = await prisma.answer.findFirst({
       where: { questionId: request.questionId, studentId: request.studentId },
     });
-    if (alreadyAnswered) {
+    if (quizStopped) {
+      feedback = new Feedback(
+        false,
+        'Quiz has been stopped! The quiz report will be displayed shortly.'
+      );
+    } else if (alreadyAnswered) {
       feedback = new Feedback(false, 'Already answered');
     } else {
       const { id } = await prisma.answer.create({

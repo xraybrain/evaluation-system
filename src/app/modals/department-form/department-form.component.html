@@ -15,13 +15,17 @@
         </div>
         <div class="form-group mt-2">
             <ng-container *ngIf="!department">
-                <button class="btn btn-block btn-success rounded" (click)="create()">
+                <button class="btn btn-block btn-success rounded" (click)="create()"
+                    [disabled]="formData.invalid || processing">
                     <i class="fas fa-plus mr-1"></i>
                     Create
+                    <span *ngIf="processing">
+                        <i class="fas fa-spinner fa-spin ml-1"></i>
+                    </span>
                 </button>
             </ng-container>
             <ng-container *ngIf="department">
-                <button class="btn btn-block btn-success rounded" (click)="update()">
+                <button class="btn btn-block btn-success rounded" (click)="update()" [disabled]="processing">
                     Save Changes
                     <i class="fas fa-check-circle ml-1"></i>
                 </button>

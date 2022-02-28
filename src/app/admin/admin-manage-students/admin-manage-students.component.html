@@ -1,7 +1,7 @@
 <div class="d-flex">
     <app-sidebar class="sidebar" [userType]="'admin'" [activeTab]="'student'"></app-sidebar>
     <div class="main-content">
-        <app-navbar></app-navbar>
+        <app-navbar [navTab]="'Students'"></app-navbar>
         <div class="p-2">
             <div class="container">
                 <app-student-manager></app-student-manager>

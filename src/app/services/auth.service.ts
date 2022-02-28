@@ -6,7 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { LoginRequest } from '../models/Auth.model';
 import Feedback from '../models/interface/Feedback.interface';
+import { User } from '../models/interface/User.interface';
 import LinkManager from '../models/LinkManager.model';
+import jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,7 @@ import LinkManager from '../models/LinkManager.model';
 export class AuthService {
   private API_URL = `${LinkManager.baseUrl}/api/`;
   private ACCESS_TOKEN_KEY = 'access-token';
+  private user: User | undefined;
 
   constructor(
     protected http: HttpClient,
@@ -59,5 +62,15 @@ export class AuthService {
 
   removeAccessToken() {
     this.cookieService.remove(this.ACCESS_TOKEN_KEY, { path: '/' });
+  }
+
+  getUserType() {
+    let token = this.accessToken;
+    let userType = '';
+    if (token) {
+      const decoded: any = jwt_decode(token);
+      userType = decoded['type'];
+    }
+    return userType;
   }
 }

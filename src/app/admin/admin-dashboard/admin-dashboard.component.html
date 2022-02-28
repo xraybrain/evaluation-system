@@ -112,7 +112,7 @@
                                                 <span>
                                                     {{activity.createdAt | date}}
                                                 </span>
-                                                <button class="btn">
+                                                <button class="btn" (click)="onDeleteActivity(activity)">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </div>

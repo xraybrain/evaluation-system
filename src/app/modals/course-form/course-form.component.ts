@@ -20,6 +20,7 @@ export class CourseFormComponent implements OnInit {
   @Input()
   teacherId: number = 0;
   formData: FormGroup = new FormGroup({});
+  processing = false;
 
   constructor(
     private readonly courseService: CourseService,
@@ -36,12 +37,15 @@ export class CourseFormComponent implements OnInit {
   }
 
   create() {
+    if (this.processing) return;
+    this.processing = true;
     const request: CreateCourseRequest = {
       title: this.fd['title'].value,
       code: this.fd['code'].value,
       teacherId: this.teacherId,
     };
     this.courseService.create(request).subscribe((response) => {
+      this.processing = false;
       if (response.success) {
         this.toastr.success('Added', '', { timeOut: 2000 });
         this.activeModal.close(response.result);
@@ -52,6 +56,8 @@ export class CourseFormComponent implements OnInit {
   }
 
   update() {
+    if (this.processing) return;
+    this.processing = true;
     const request: UpdateCourseRequest = {
       id: this.course?.id as number,
       title: this.fd['title'].value,
@@ -62,6 +68,7 @@ export class CourseFormComponent implements OnInit {
 
     this.courseService.findAndUpdate(request).subscribe((response) => {
       this.toastr.clear();
+      this.processing = true;
       if (response.success) {
         this.toastr.success('Saved!', '', { timeOut: 2000 });
         if (this.course) {

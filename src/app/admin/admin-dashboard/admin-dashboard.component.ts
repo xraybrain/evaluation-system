@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { months } from 'src/app/config/App.config';
 import { AdminDashboardStats } from 'src/app/models/interface/Admin.interface';
 import { Activity } from 'src/app/models/interface/User.interface';
@@ -27,7 +28,8 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private readonly adminService: AdminService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -52,5 +54,22 @@ export class AdminDashboardComponent implements OnInit {
   onFilterRecentActivities(id: number, name: string) {
     this.selectedMonth = { id, name };
     this.loadActivities();
+  }
+
+  onDeleteActivity(activity: Activity) {
+    this.toastr.info('Deleting...', '', { disableTimeOut: true });
+    this.userService
+      .findAndDeleteActivity(activity.id)
+      .subscribe((response) => {
+        this.toastr.clear();
+        if (response.success) {
+          const index = this.activities.findIndex((d) => d.id === activity.id);
+          if (index !== -1) {
+            this.activities.splice(index, 1);
+          }
+        } else {
+          this.toastr.error(response.message);
+        }
+      });
   }
 }

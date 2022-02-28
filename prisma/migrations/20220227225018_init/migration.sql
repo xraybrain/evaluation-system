@@ -38,6 +38,20 @@ CREATE TABLE `User` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `RefreshToken` (
+    `id` VARCHAR(191) NOT NULL,
+    `token` MEDIUMTEXT NOT NULL,
+    `userAgent` TEXT NOT NULL,
+    `userId` INTEGER NOT NULL,
+    `valid` BOOLEAN NOT NULL DEFAULT true,
+    `createdAt` DATETIME(3) NOT NULL,
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Admin` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
@@ -100,6 +114,7 @@ CREATE TABLE `Topic` (
 CREATE TABLE `Quiz` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `token` VARCHAR(15) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
     `active` BOOLEAN NOT NULL DEFAULT false,
     `topicId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL,
@@ -138,13 +153,30 @@ CREATE TABLE `Answer` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `questionId` INTEGER NOT NULL,
     `studentId` INTEGER NOT NULL,
+    `quizId` INTEGER NOT NULL,
     `answer` VARCHAR(191) NOT NULL,
+    `score` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL,
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Activity` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `content` VARCHAR(250) NOT NULL,
+    `userId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL,
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `RefreshToken` ADD CONSTRAINT `RefreshToken_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Admin` ADD CONSTRAINT `Admin_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -183,4 +215,10 @@ ALTER TABLE `Option` ADD CONSTRAINT `Option_questionId_fkey` FOREIGN KEY (`quest
 ALTER TABLE `Answer` ADD CONSTRAINT `Answer_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `Student`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Answer` ADD CONSTRAINT `Answer_quizId_fkey` FOREIGN KEY (`quizId`) REFERENCES `Quiz`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Answer` ADD CONSTRAINT `Answer_questionId_fkey` FOREIGN KEY (`questionId`) REFERENCES `Question`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Activity` ADD CONSTRAINT `Activity_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

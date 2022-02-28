@@ -21,8 +21,11 @@
     </div>
     <!-- Icon -->
     <!-- Message -->
-    <div class="my-1 text-center text-muted">
+    <div class="my-1 text-center text-muted" *ngIf="settings.type !== MessageBoxType.Html">
         <h5>{{settings.message}}</h5>
+    </div>
+    <div class="my-1" *ngIf="settings.type === MessageBoxType.Html">
+        <pre [innerHtml]="settings.message"></pre>
     </div>
     <!-- Message -->
 </div>
@@ -44,7 +47,7 @@
         </button>
     </ng-container>
 
-    <ng-container *ngIf="settings.type === MessageBoxType.Error">
+    <ng-container *ngIf="settings.type === MessageBoxType.Error || settings.type === MessageBoxType.Html">
         <button class="btn btn-light rounded" (click)="close(MessageBoxButton.Close)">
             Close
         </button>

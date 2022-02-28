@@ -21,6 +21,7 @@ import * as http from 'http';
 import { Server } from 'socket.io';
 import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 import 'localstorage-polyfill';
+import * as path from 'path';
 global['localStorage'] = localStorage;
 dotEnv.config();
 
@@ -54,6 +55,9 @@ export function App(): http.Server {
 
   app.set('view engine', 'html');
   app.set('views', distFolder);
+
+  // statuc folder
+  app.use(express.static(path.join(__dirname, '../../../public/')));
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });

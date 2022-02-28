@@ -1,6 +1,4 @@
 <div class="wrapper">
-  <div *ngIf="loading$ | async">
-    Loading...
-  </div>
   <router-outlet></router-outlet>
 </div>
+<div class="overlay" (click)="onToggleSidebar()"></div>

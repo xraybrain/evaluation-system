@@ -28,6 +28,7 @@ export class QuestionFormComponent implements OnInit {
   quizId: number = 0;
   formData: FormGroup = new FormGroup({});
   options: string[] = [];
+  processing = false;
 
   constructor(
     private readonly questionService: QuestionService,
@@ -51,6 +52,8 @@ export class QuestionFormComponent implements OnInit {
   }
 
   create() {
+    if (this.processing) return;
+    this.processing = true;
     if (!this.answerExists()) {
       this.toastr.warning('Include the answer in the options.', '', {
         timeOut: 2000,
@@ -68,6 +71,7 @@ export class QuestionFormComponent implements OnInit {
     this.toastr.info('Adding...', '', { disableTimeOut: true });
     this.questionService.create(request).subscribe((response) => {
       this.toastr.clear();
+      this.processing = false;
       if (response.success) {
         this.toastr.success('Added', '', { timeOut: 2000 });
         this.activeModal.close(response.result);
