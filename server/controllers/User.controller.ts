@@ -59,7 +59,9 @@ export const uploadAvatarController = async (
 ) => {
   const user = req.user as User;
   const request = new UploadAvatarRequest(
-    req.file?.filename as string,
+    process.env['NODE_ENV'] === 'production'
+      ? (req.file?.path as string)
+      : (req.file?.filename as string),
     user.id
   );
   const feedback = await updateUser({ id: user.id, avatar: request.filepath });
