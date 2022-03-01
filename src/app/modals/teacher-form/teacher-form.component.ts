@@ -79,6 +79,10 @@ export class TeacherFormComponent implements OnInit {
           this.teacher.user.surname = this.fd['surname'].value;
           this.teacher.user.othernames = this.fd['othernames'].value;
           this.teacher.user.email = this.fd['email'].value;
+          this.teacher.department = this.departments.find(
+            (d) => d.id === Number(this.fd['deptId'].value)
+          );
+          this.teacher.deptId = Number(this.fd['deptId'].value);
           this.activeModal.dismiss();
         }
       } else {

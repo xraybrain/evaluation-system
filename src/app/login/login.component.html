@@ -7,10 +7,10 @@
             <span>Evaluator</span>
         </div>
         <div class="card card-rounded static-align-center">
-            <div class="card-header pb-1">
-                <h5 class="card-title mb-0">
-                    Log In
-                </h5>
+            <div class="card-header pb-2">
+                <h6 class="card-title mb-0">
+                    Log In | <a routerLink="/register">Register</a>
+                </h6>
             </div>
             <div class="card-body py-2">
                 <form [formGroup]="formData" (ngSubmit)="login()">

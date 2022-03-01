@@ -60,6 +60,7 @@ import { StudentQuizzesResultComponent } from './components/student-quizzes-resu
 import { UploadQuestionComponent } from './modals/upload-question/upload-question.component';
 import { UploadPhotoComponent } from './modals/upload-photo/upload-photo.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -111,6 +112,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
     UploadQuestionComponent,
     UploadPhotoComponent,
     ForgotPasswordComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

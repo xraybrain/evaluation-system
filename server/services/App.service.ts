@@ -9,8 +9,8 @@ import {
 import { Feedback } from 'server/models/Feedback.model';
 import { signToken } from 'server/utils/jwt.util';
 import * as crypto from 'crypto';
+import prisma from '../utils/prisma.util';
 
-const prisma = new PrismaClient();
 const ACCESS_TOKEN_TIMEOUT = process.env['ACCESS_TOKEN_TIMEOUT'] as string;
 const REFRESH_TOKEN_TIMEOUT = process.env['REFRESH_TOKEN_TIMEOUT'] as string;
 const SALT_ROUND = Number(process.env['SALT_ROUND']);

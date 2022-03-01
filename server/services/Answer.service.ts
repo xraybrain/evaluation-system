@@ -2,8 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { CreateAnswerRequest } from 'server/models/Answer.model';
 import { Feedback } from 'server/models/Feedback.model';
 import { getStudentQuizResult } from './Student.service';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma.util';
 
 export const createAnswer = async (request: CreateAnswerRequest) => {
   let feedback: Feedback;

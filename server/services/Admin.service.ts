@@ -8,8 +8,8 @@ import { UserType } from 'server/models/Enums';
 import { Feedback } from 'server/models/Feedback.model';
 import * as bcrypt from 'bcryptjs';
 import Pagination from 'server/models/Pagination.model';
+import prisma from '../utils/prisma.util';
 
-const prisma = new PrismaClient();
 const SALT_ROUND = Number(process.env['SALT_ROUND']);
 
 export const createAdmin = async (request: CreateAdminRequest, user: User) => {

@@ -24,11 +24,7 @@ export default class DepartmentRoute {
       ensureAuthenticated,
       getDepartmentController
     );
-    this.app.get(
-      '/api/departments/',
-      ensureAuthenticated,
-      getDepartmentsController
-    );
+    this.app.get('/api/departments/', getDepartmentsController);
     this.app.put(
       '/api/department/',
       ensureAuthenticated,

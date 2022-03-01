@@ -13,8 +13,7 @@ import {
   UploadQuestionRequest,
 } from 'server/models/Question.model';
 import { xlsxReader } from 'server/utils/xlsx.util';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma.util';
 
 export const createQuestion = async (request: CreateQuestionRequest) => {
   let feedback: Feedback;

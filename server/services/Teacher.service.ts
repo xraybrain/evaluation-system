@@ -8,8 +8,8 @@ import {
   DeleteTeacherRequest,
   UpdateTeacherRequest,
 } from 'server/models/Teacher.model';
+import prisma from '../utils/prisma.util';
 
-const prisma = new PrismaClient();
 const SALT_ROUND = Number(process.env['SALT_ROUND']);
 
 export const createTeacher = async (

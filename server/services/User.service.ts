@@ -4,8 +4,7 @@ import {
   DeleteUserActivityRequest,
   UpdateUserRequest,
 } from 'server/models/User.model';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma.util';
 
 export const getUser = async (filter: any) => {
   let user: any | null;

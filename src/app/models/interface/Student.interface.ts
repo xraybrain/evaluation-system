@@ -14,6 +14,7 @@ export interface UpdateStudentRequest {
   id: number;
   surname: string;
   othernames: string;
+  regNo: string;
   email: string;
   password?: string;
   deptId: number;

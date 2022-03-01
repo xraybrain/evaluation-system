@@ -69,6 +69,7 @@ export class StudentFormComponent implements OnInit {
       id: this.student?.id as number,
       surname: this.fd['surname'].value,
       othernames: this.fd['othernames'].value,
+      regNo: this.fd['regNo'].value,
       email: this.fd['email'].value,
       password: this.fd['password'].value,
       deptId: this.fd['deptId'].value,
@@ -85,6 +86,15 @@ export class StudentFormComponent implements OnInit {
           this.student.user.surname = this.fd['surname'].value;
           this.student.user.othernames = this.fd['othernames'].value;
           this.student.user.email = this.fd['email'].value;
+          this.student.regNo = this.fd['regNo'].value;
+          this.student.level = this.levels.find(
+            (d) => d.id === Number(this.fd['levelId'].value)
+          );
+          this.student.department = this.departments.find(
+            (d) => d.id === Number(this.fd['deptId'].value)
+          );
+          this.student.deptId = Number(this.fd['deptId'].value);
+          this.student.levelId = Number(this.fd['levelId'].value);
           this.activeModal.dismiss();
         }
       } else {

@@ -16,11 +16,7 @@ export default class StudentRoute {
   }
 
   private register() {
-    this.app.post(
-      '/api/student/',
-      ensureAuthenticated,
-      createStudentController
-    );
+    this.app.post('/api/student/', createStudentController);
     this.app.get('/api/student/:id', ensureAuthenticated, getStudentController);
     this.app.get('/api/students/', ensureAuthenticated, getStudentsController);
     this.app.put('/api/student/', ensureAuthenticated, updateStudentController);

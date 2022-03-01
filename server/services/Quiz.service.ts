@@ -9,8 +9,7 @@ import {
 } from 'server/models/Quiz.model';
 import * as crypto from 'crypto';
 import { signToken } from 'server/utils/jwt.util';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma.util';
 
 export const createQuiz = async (request: CreateQuizRequest, user: User) => {
   let feedback: Feedback;

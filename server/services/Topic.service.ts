@@ -6,8 +6,7 @@ import {
   DeleteTopicRequest,
   UpdateTopicRequest,
 } from 'server/models/Topic.model';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma.util';
 
 export const createTopic = async (request: CreateTopicRequest, user: User) => {
   let feedback: Feedback;

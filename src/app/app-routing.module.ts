@@ -11,6 +11,7 @@ import { StudentManagerComponent } from './components/student-manager/student-ma
 import { TeacherManagerComponent } from './components/teacher-manager/teacher-manager.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 import { QuizBoardComponent } from './student/quiz-board/quiz-board.component';
 import { QuizzesComponent } from './student/quizzes/quizzes.component';
 import { StudentAccountComponent } from './student/student-account/student-account.component';
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'forgot/password', component: ForgotPasswordComponent },
+  { path: 'register', component: RegisterComponent },
 
   /** Admin Route */
   {

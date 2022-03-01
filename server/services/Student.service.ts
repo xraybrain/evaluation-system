@@ -8,8 +8,8 @@ import {
   DeleteStudentRequest,
   UpdateStudentRequest,
 } from 'server/models/Student.model';
+import prisma from '../utils/prisma.util';
 
-const prisma = new PrismaClient();
 const SALT_ROUND = Number(process.env['SALT_ROUND']);
 
 export const createStudent = async (
@@ -72,13 +72,15 @@ export const createStudent = async (
       feedback.result = newStudent;
 
       // Track Activity
-      await prisma.activity.create({
-        data: {
-          userId: user.id,
-          content: `Added new student '${newStudent?.user.surname} ${newStudent?.user.othernames}' record'`,
-          createdAt: new Date(),
-        },
-      });
+      if (user) {
+        await prisma.activity.create({
+          data: {
+            userId: user.id,
+            content: `Added new student '${newStudent?.user.surname} ${newStudent?.user.othernames}' record'`,
+            createdAt: new Date(),
+          },
+        });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -202,7 +204,7 @@ export const updateStudent = async (
       },
       where: { id: student?.userId },
     });
-    
+
     feedback = new Feedback(true, 'success');
     // Track Activity
     await prisma.activity.create({

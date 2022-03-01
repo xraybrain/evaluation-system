@@ -6,8 +6,7 @@ import {
 } from 'server/models/Department.model';
 import { Feedback } from 'server/models/Feedback.model';
 import Pagination from 'server/models/Pagination.model';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma.util';
 
 export const createDepartment = async (
   request: CreateDepartmentRequest,
